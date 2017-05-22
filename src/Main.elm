@@ -1,8 +1,12 @@
 module Main exposing (..)
 
-import Html exposing (..)
 import Data.Blueprint as BP exposing (Blueprint, EncodedBlueprint)
+import Ports exposing (..)
+import Html exposing (..)
+import Html.Attributes as HA exposing (class)
+import Html.Events exposing (onClick, onInput)
 import Dict exposing (Dict)
+import Json.Decode exposing (Value)
 
 
 main : Program Never Model Msg
@@ -24,6 +28,7 @@ type alias Model =
     , blueprint : Blueprint
     , blueprintString : EncodedBlueprint
     , tiles : Dict ( Int, Int ) Bool
+    , bpTextarea : String
     }
 
 
@@ -33,6 +38,7 @@ model =
     , blueprint = BP.empty
     , blueprintString = BP.encodeBlueprint BP.empty
     , tiles = Dict.empty
+    , bpTextarea = ""
     }
 
 
@@ -43,14 +49,15 @@ model =
 type Msg
     = NoOp
     | DecodeBlueprint
+      -- drop 1. char -> base64 decompress -> inflate
     | Error String
     | NewBlueprint
       -- | UpdateBlueprint
     | EncodeBlueprint
-
-
-
--- | GenerateUrl
+      -- deflate -> base64 compress -> add '0'
+      -- | GenerateUrl
+    | InflatedValue Value
+    | BpTextareaInput String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -60,7 +67,13 @@ update msg model =
             ( model, Cmd.none )
 
         DecodeBlueprint ->
-            ( { model | blueprint = BP.decodeBlueprint model.blueprintString }, Cmd.none )
+            case BP.deBase64String model.bpTextarea of
+                Ok str ->
+                    ( model, inflate str )
+
+                -- update (Error str) model
+                Err e ->
+                    update (Error e) model
 
         Error e ->
             { model | statusText = e } ! []
@@ -71,6 +84,17 @@ update msg model =
         EncodeBlueprint ->
             ( { model | blueprintString = BP.encodeBlueprint model.blueprint }, Cmd.none )
 
+        InflatedValue val ->
+            case BP.decodeBlueprintString val of
+                Ok bp ->
+                    ( { model | blueprint = bp }, Cmd.none )
+
+                Err e ->
+                    update (Error e) model
+
+        BpTextareaInput str ->
+            ( { model | bpTextarea = str }, Cmd.none )
+
 
 
 -- VIEW
@@ -78,12 +102,18 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    text "bla"
+    div [ class "blueprint-input" ]
+        [ textarea [ onInput BpTextareaInput, HA.rows 5, HA.cols 40 ] []
+        , button [ onClick DecodeBlueprint ] [ text "decode" ]
+        , text model.statusText
+        ]
 
 
+
+-- grid : List (Html Msg) -> Html Msg
 -- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    inflated InflatedValue

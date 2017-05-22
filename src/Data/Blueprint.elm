@@ -1,29 +1,38 @@
 module Data.Blueprint exposing (..)
 
+import Ports exposing (..)
 import Data.Entity exposing (..)
 import Data.Icon exposing (Icon)
 import Json.Decode exposing (..)
 import Dict exposing (Dict)
+import String exposing (dropLeft)
+import Base64
 
 
 type Blueprint
-    = Blueprint
-        { icons :
-            Dict Int Icon
-            -- Dict??
-        , entities :
-            Dict Int Entity
-            -- Dict??
+    = Blueprint BlueprintSingle
+    | BlueprintBook
+        { blueprints : Dict Int BlueprintSingle
         , label : String
+        , active_index : Int
         , version : Int
         }
 
 
-type alias BlueprintBook =
-    { blueprints : Dict Int Blueprint
+type alias BlueprintSingle =
+    { icons : Dict Int Icon
+    , entities : Dict Int Entity
     , label : String
     , version : Int
     }
+
+
+
+-- type alias BlueprintBook =
+--     { blueprints : Dict Int Blueprint
+--     , label : String
+--     , version : Int
+--     }
 
 
 type EncodedBlueprint
@@ -35,9 +44,18 @@ empty =
     Blueprint { icons = Dict.empty, entities = Dict.empty, label = "", version = 0 }
 
 
-decodeBlueprintString : String -> Maybe Blueprint
-decodeBlueprintString str =
-    Nothing
+
+-- drop 1. char -> base64 decompress -> inflate
+
+
+decodeBlueprintString : Value -> Result String Blueprint
+decodeBlueprintString val =
+    Err ""
+
+
+deBase64String : String -> Result String String
+deBase64String =
+    Base64.decode << dropLeft 1
 
 
 decodeBlueprint : EncodedBlueprint -> Blueprint
