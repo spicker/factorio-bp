@@ -49,12 +49,10 @@ model =
 type Msg
     = NoOp
     | DecodeBlueprint
-      -- drop 1. char -> base64 decompress -> inflate
     | Error String
     | NewBlueprint
       -- | UpdateBlueprint
     | EncodeBlueprint
-      -- deflate -> base64 compress -> add '0'
       -- | GenerateUrl
     | InflatedValue Value
     | BpTextareaInput String
@@ -101,12 +99,14 @@ update msg model =
 
 
 view : Model -> Html Msg
-view model =
+view model = div [] [
     div [ class "blueprint-input" ]
         [ textarea [ onInput BpTextareaInput, HA.rows 5, HA.cols 40 ] []
         , button [ onClick DecodeBlueprint ] [ text "decode" ]
         , text model.statusText
         ]
+    , div [] 
+        [ text <| toString model.blueprint] ]
 
 
 

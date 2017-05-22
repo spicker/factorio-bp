@@ -1,16 +1,20 @@
 module Data.Icon exposing (..)
 
+import Json.Decode exposing (..)
+
 
 type Icon
     = Icon
-        { signal :
-            Signal
-            -- Dict??
-        }
-
-
-type Signal
-    = Signal
         { type_ : String
         , name : String
         }
+
+
+empty : Icon
+empty =
+    Icon { type_ = "", name = "" }
+
+
+iconDecoder : Decoder Icon
+iconDecoder =
+    succeed empty

@@ -2,6 +2,7 @@ module Data.Entity exposing (..)
 
 import Data.Entity.Connection exposing (Connection)
 import Dict exposing (Dict)
+import Json.Decode exposing (..)
 
 
 type Entity
@@ -18,3 +19,13 @@ type Direction
     | East
     | South
     | West
+
+
+empty : Entity
+empty =
+    Entity { name = "", position = ( 0, 0 ), direction = North, connections = Dict.empty }
+
+
+entityDecoder : Decoder Entity
+entityDecoder =
+    succeed empty
