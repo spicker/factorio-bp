@@ -2,8 +2,15 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "0.1.0",
+    "taskName": "elm make",
     "command": "elm-make",
     "isShellCommand": true,
-    "args": ["src/Main.elm", "--output=js/main.js"],
-    "showOutput": "always"
+    "args": [
+        "src/Main.elm",
+        "--output=js/main.js",
+        "--yes"
+    ],
+    "showOutput": "silent",
+    "isBuildCommand": true,
+    "echoCommand": true
 }

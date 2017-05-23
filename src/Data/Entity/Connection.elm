@@ -1,5 +1,7 @@
 module Data.Entity.Connection exposing (..)
 
+import Json.Decode exposing (..)
+
 
 type Connection
     = Connection
@@ -11,3 +13,8 @@ type Connection
 type CircuitConnection
     = MonoConnection { entityId : Int }
     | MultiConnection { entityId : Int, circuitId : Int }
+
+
+decoder : Decoder Connection
+decoder =
+    succeed <| Connection { redConnections = [], greenConnections = [] }

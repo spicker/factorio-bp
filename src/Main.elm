@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes as HA exposing (class)
 import Html.Events exposing (onClick, onInput)
 import Dict exposing (Dict)
-import Json.Decode exposing (Value)
+import Json.Decode exposing (Value, decodeString, value)
 
 
 main : Program Never Model Msg
@@ -65,13 +65,23 @@ update msg model =
             ( model, Cmd.none )
 
         DecodeBlueprint ->
-            case BP.deBase64String model.bpTextarea of
-                Ok str ->
-                    ( model, inflate str )
+            case decodeString value model.bpTextarea of
+                Err _ ->
+                    case BP.decodeBase64 model.bpTextarea of
+                        Ok str ->
+                            ( model, inflate str )
 
-                -- update (Error str) model
-                Err e ->
-                    update (Error e) model
+                        -- update (Error str) model
+                        Err e ->
+                            update (Error e) model
+
+                Ok val ->
+                    case BP.decodeJson val of
+                        Ok bp ->
+                            ( { model | blueprint = bp }, Cmd.none )
+
+                        Err e ->
+                            update (Error e) model
 
         Error e ->
             { model | statusText = e } ! []
@@ -83,7 +93,7 @@ update msg model =
             ( { model | blueprintString = BP.encodeBlueprint model.blueprint }, Cmd.none )
 
         InflatedValue val ->
-            case BP.decodeBlueprintString val of
+            case BP.decodeJson <| Debug.log "value: " val of
                 Ok bp ->
                     ( { model | blueprint = bp }, Cmd.none )
 
@@ -99,14 +109,16 @@ update msg model =
 
 
 view : Model -> Html Msg
-view model = div [] [
-    div [ class "blueprint-input" ]
-        [ textarea [ onInput BpTextareaInput, HA.rows 5, HA.cols 40 ] []
-        , button [ onClick DecodeBlueprint ] [ text "decode" ]
-        , text model.statusText
+view model =
+    div []
+        [ div [ class "blueprint-input" ]
+            [ textarea [ onInput BpTextareaInput, HA.rows 5, HA.cols 40 ] []
+            , button [ onClick DecodeBlueprint ] [ text "decode" ]
+            , text model.statusText
+            ]
+        , div []
+            [ text <| toString model.blueprint ]
         ]
-    , div [] 
-        [ text <| toString model.blueprint] ]
 
 
 

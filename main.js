@@ -9380,12 +9380,6 @@ var _user$project$Ports$inflated = _elm_lang$core$Native_Platform.incomingPort('
 var _user$project$Data_Entity_Connection$Connection = function (a) {
 	return {ctor: 'Connection', _0: a};
 };
-var _user$project$Data_Entity_Connection$decoder = _elm_lang$core$Json_Decode$succeed(
-	_user$project$Data_Entity_Connection$Connection(
-		{
-			redConnections: {ctor: '[]'},
-			greenConnections: {ctor: '[]'}
-		}));
 var _user$project$Data_Entity_Connection$MultiConnection = function (a) {
 	return {ctor: 'MultiConnection', _0: a};
 };
@@ -9393,122 +9387,28 @@ var _user$project$Data_Entity_Connection$MonoConnection = function (a) {
 	return {ctor: 'MonoConnection', _0: a};
 };
 
-var _user$project$Data_Entity$Entity = F4(
-	function (a, b, c, d) {
-		return {name: a, position: b, direction: c, connections: d};
-	});
+var _user$project$Data_Entity$Entity = function (a) {
+	return {ctor: 'Entity', _0: a};
+};
 var _user$project$Data_Entity$West = {ctor: 'West'};
 var _user$project$Data_Entity$South = {ctor: 'South'};
 var _user$project$Data_Entity$East = {ctor: 'East'};
 var _user$project$Data_Entity$North = {ctor: 'North'};
-var _user$project$Data_Entity$empty = {
-	name: '',
-	position: {ctor: '_Tuple2', _0: 0, _1: 0},
-	direction: _user$project$Data_Entity$North,
-	connections: _elm_lang$core$Maybe$Nothing
-};
-var _user$project$Data_Entity$decoder = function () {
-	var convert = function (d) {
-		var _p0 = d;
-		switch (_p0) {
-			case 0:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$North);
-			case 2:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$West);
-			case 4:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$South);
-			case 6:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$East);
-			default:
-				return _elm_lang$core$Json_Decode$fail('Invalid value for Direction');
-		}
-	};
-	var direction = function (md) {
-		var _p1 = md;
-		if (_p1.ctor === 'Nothing') {
-			return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$North);
-		} else {
-			return convert(_p1._0);
-		}
-	};
-	return A5(
-		_elm_lang$core$Json_Decode$map4,
-		_user$project$Data_Entity$Entity,
-		A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
-		A3(
-			_elm_lang$core$Json_Decode$map2,
-			F2(
-				function (v0, v1) {
-					return {ctor: '_Tuple2', _0: v0, _1: v1};
-				}),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'position',
-					_1: {
-						ctor: '::',
-						_0: 'x',
-						_1: {ctor: '[]'}
-					}
-				},
-				_elm_lang$core$Json_Decode$float),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'position',
-					_1: {
-						ctor: '::',
-						_0: 'y',
-						_1: {ctor: '[]'}
-					}
-				},
-				_elm_lang$core$Json_Decode$float)),
-		A2(
-			_elm_lang$core$Json_Decode$andThen,
-			direction,
-			_elm_lang$core$Json_Decode$maybe(
-				A2(_elm_lang$core$Json_Decode$field, 'direction', _elm_lang$core$Json_Decode$int))),
-		_elm_lang$core$Json_Decode$maybe(
-			_elm_lang$core$Json_Decode$list(_user$project$Data_Entity_Connection$decoder)));
-}();
-
-var _user$project$Data_Icon$empty = {type_: '', name: ''};
-var _user$project$Data_Icon$Icon = F2(
-	function (a, b) {
-		return {type_: a, name: b};
+var _user$project$Data_Entity$empty = _user$project$Data_Entity$Entity(
+	{
+		name: '',
+		position: {ctor: '_Tuple2', _0: 0, _1: 0},
+		direction: _user$project$Data_Entity$North,
+		connections: _elm_lang$core$Dict$empty
 	});
-var _user$project$Data_Icon$decoder = A3(
-	_elm_lang$core$Json_Decode$map2,
-	_user$project$Data_Icon$Icon,
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'signal',
-			_1: {
-				ctor: '::',
-				_0: 'type',
-				_1: {ctor: '[]'}
-			}
-		},
-		_elm_lang$core$Json_Decode$string),
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'signal',
-			_1: {
-				ctor: '::',
-				_0: 'name',
-				_1: {ctor: '[]'}
-			}
-		},
-		_elm_lang$core$Json_Decode$string));
+var _user$project$Data_Entity$entityDecoder = _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$empty);
 
-var _user$project$Data_Tile$Tile = {};
-var _user$project$Data_Tile$decoder = _elm_lang$core$Json_Decode$succeed(_user$project$Data_Tile$Tile);
+var _user$project$Data_Icon$Icon = function (a) {
+	return {ctor: 'Icon', _0: a};
+};
+var _user$project$Data_Icon$empty = _user$project$Data_Icon$Icon(
+	{type_: '', name: ''});
+var _user$project$Data_Icon$iconDecoder = _elm_lang$core$Json_Decode$succeed(_user$project$Data_Icon$empty);
 
 var _user$project$Data_Blueprint$encodedBlueprintToString = function (_p0) {
 	var _p1 = _p0;
@@ -9517,13 +9417,13 @@ var _user$project$Data_Blueprint$encodedBlueprintToString = function (_p0) {
 var _user$project$Data_Blueprint$validateString = function (str) {
 	return _elm_lang$core$Maybe$Nothing;
 };
-var _user$project$Data_Blueprint$decodeBase64 = function (_p2) {
+var _user$project$Data_Blueprint$deBase64String = function (_p2) {
 	return _truqu$elm_base64$Base64$decode(
 		A2(_elm_lang$core$String$dropLeft, 1, _p2));
 };
-var _user$project$Data_Blueprint$BlueprintSingle = F5(
-	function (a, b, c, d, e) {
-		return {icons: a, entities: b, tiles: c, label: d, version: e};
+var _user$project$Data_Blueprint$BlueprintSingle = F4(
+	function (a, b, c, d) {
+		return {icons: a, entities: b, label: c, version: d};
 	});
 var _user$project$Data_Blueprint$BlueprintMulti = F4(
 	function (a, b, c, d) {
@@ -9536,17 +9436,11 @@ var _user$project$Data_Blueprint$Blueprint = function (a) {
 	return {ctor: 'Blueprint', _0: a};
 };
 var _user$project$Data_Blueprint$empty = _user$project$Data_Blueprint$Blueprint(
-	A5(
-		_user$project$Data_Blueprint$BlueprintSingle,
-		{ctor: '[]'},
-		{ctor: '[]'},
-		{ctor: '[]'},
-		'',
-		0));
+	{icons: _elm_lang$core$Dict$empty, entities: _elm_lang$core$Dict$empty, label: '', version: 0});
 var _user$project$Data_Blueprint$decodeBlueprint = function (ebp) {
 	return _user$project$Data_Blueprint$empty;
 };
-var _user$project$Data_Blueprint$decoder = function () {
+var _user$project$Data_Blueprint$blueprintDecoder = function () {
 	var blueprintSingle = A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'version',
@@ -9555,22 +9449,15 @@ var _user$project$Data_Blueprint$decoder = function () {
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 			'label',
 			_elm_lang$core$Json_Decode$string,
-			A4(
-				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
-				'tiles',
-				_elm_lang$core$Json_Decode$list(_user$project$Data_Tile$decoder),
-				{ctor: '[]'},
-				A4(
-					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
-					'entities',
-					_elm_lang$core$Json_Decode$list(_user$project$Data_Entity$decoder),
-					{ctor: '[]'},
-					A4(
-						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
-						'icons',
-						_elm_lang$core$Json_Decode$list(_user$project$Data_Icon$decoder),
-						{ctor: '[]'},
-						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Blueprint$BlueprintSingle))))));
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'entities',
+				A2(_elm_community$json_extra$Json_Decode_Extra$dict2, _elm_lang$core$Json_Decode$int, _user$project$Data_Entity$entityDecoder),
+				A3(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+					'icons',
+					A2(_elm_community$json_extra$Json_Decode_Extra$dict2, _elm_lang$core$Json_Decode$int, _user$project$Data_Icon$iconDecoder),
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Blueprint$BlueprintSingle)))));
 	var blueprintMulti = A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'version',
@@ -9583,37 +9470,36 @@ var _user$project$Data_Blueprint$decoder = function () {
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 				'label',
 				_elm_lang$core$Json_Decode$string,
-				A4(
-					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
+				A3(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 					'blueprints',
-					_elm_lang$core$Json_Decode$list(blueprintSingle),
-					{ctor: '[]'},
+					A2(_elm_community$json_extra$Json_Decode_Extra$dict2, _elm_lang$core$Json_Decode$int, blueprintSingle),
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Blueprint$BlueprintMulti)))));
 	return _elm_lang$core$Json_Decode$oneOf(
 		{
 			ctor: '::',
 			_0: A2(
 				_elm_lang$core$Json_Decode$andThen,
-				function (_p3) {
-					return _elm_lang$core$Json_Decode$succeed(
-						_user$project$Data_Blueprint$Blueprint(_p3));
+				function (x) {
+					return _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(
+						_user$project$Data_Blueprint$Blueprint(x));
 				},
 				A2(_elm_lang$core$Json_Decode$field, 'blueprint', blueprintSingle)),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$core$Json_Decode$andThen,
-					function (_p4) {
-						return _elm_lang$core$Json_Decode$succeed(
-							_user$project$Data_Blueprint$BlueprintBook(_p4));
+					function (x) {
+						return _NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(
+							_user$project$Data_Blueprint$BlueprintBook(x));
 					},
 					A2(_elm_lang$core$Json_Decode$field, 'blueprint_book', blueprintMulti)),
 				_1: {ctor: '[]'}
 			}
 		});
 }();
-var _user$project$Data_Blueprint$decodeJson = function (val) {
-	return A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Data_Blueprint$decoder, val);
+var _user$project$Data_Blueprint$decodeBlueprintString = function (val) {
+	return A2(_elm_lang$core$Json_Decode$decodeValue, _user$project$Data_Blueprint$blueprintDecoder, val);
 };
 var _user$project$Data_Blueprint$EncodedBlueprint = function (a) {
 	return {ctor: 'EncodedBlueprint', _0: a};
@@ -9656,39 +9542,19 @@ var _user$project$Main$update = F2(
 				case 'NoOp':
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'DecodeBlueprint':
-					var _p1 = A2(_elm_lang$core$Json_Decode$decodeString, _elm_lang$core$Json_Decode$value, model.bpTextarea);
-					if (_p1.ctor === 'Err') {
-						var _p2 = _user$project$Data_Blueprint$decodeBase64(model.bpTextarea);
-						if (_p2.ctor === 'Ok') {
-							return {
-								ctor: '_Tuple2',
-								_0: model,
-								_1: _user$project$Ports$inflate(_p2._0)
-							};
-						} else {
-							var _v3 = _user$project$Main$Error(_p2._0),
-								_v4 = model;
-							msg = _v3;
-							model = _v4;
-							continue update;
-						}
+					var _p1 = _user$project$Data_Blueprint$deBase64String(model.bpTextarea);
+					if (_p1.ctor === 'Ok') {
+						return {
+							ctor: '_Tuple2',
+							_0: model,
+							_1: _user$project$Ports$inflate(_p1._0)
+						};
 					} else {
-						var _p3 = _user$project$Data_Blueprint$decodeJson(_p1._0);
-						if (_p3.ctor === 'Ok') {
-							return {
-								ctor: '_Tuple2',
-								_0: _elm_lang$core$Native_Utils.update(
-									model,
-									{blueprint: _p3._0}),
-								_1: _elm_lang$core$Platform_Cmd$none
-							};
-						} else {
-							var _v6 = _user$project$Main$Error(_p3._0),
-								_v7 = model;
-							msg = _v6;
-							model = _v7;
-							continue update;
-						}
+						var _v2 = _user$project$Main$Error(_p1._0),
+							_v3 = model;
+						msg = _v2;
+						model = _v3;
+						continue update;
 					}
 				case 'Error':
 					return A2(
@@ -9719,21 +9585,20 @@ var _user$project$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'InflatedValue':
-					var _p4 = _user$project$Data_Blueprint$decodeJson(
-						A2(_elm_lang$core$Debug$log, 'value: ', _p0._0));
-					if (_p4.ctor === 'Ok') {
+					var _p2 = _user$project$Data_Blueprint$decodeBlueprintString(_p0._0);
+					if (_p2.ctor === 'Ok') {
 						return {
 							ctor: '_Tuple2',
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
-								{blueprint: _p4._0}),
+								{blueprint: _p2._0}),
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					} else {
-						var _v9 = _user$project$Main$Error(_p4._0),
-							_v10 = model;
-						msg = _v9;
-						model = _v10;
+						var _v5 = _user$project$Main$Error(_p2._0),
+							_v6 = model;
+						msg = _v5;
+						model = _v6;
 						continue update;
 					}
 				default:

@@ -3,6 +3,7 @@ module Data.Blueprint exposing (..)
 import Ports exposing (..)
 import Data.Entity as Entity exposing (..)
 import Data.Icon as Icon exposing (Icon)
+import Data.Tile as Tile exposing (Tile)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
 import Json.Decode.Extra exposing (dict2)
@@ -17,15 +18,16 @@ type Blueprint
 
 
 type alias BlueprintSingle =
-    { icons : Dict Int Icon
-    , entities : Dict Int Entity
+    { icons : List Icon
+    , entities : List Entity
+    , tiles : List Tile
     , label : String
     , version : Int
     }
 
 
 type alias BlueprintMulti =
-    { blueprints : Dict Int BlueprintSingle
+    { blueprints : List BlueprintSingle
     , label : String
     , active_index : Int
     , version : Int
@@ -38,50 +40,50 @@ type EncodedBlueprint
 
 empty : Blueprint
 empty =
-    Blueprint { icons = Dict.empty, entities = Dict.empty, label = "", version = 0 }
+    Blueprint <| BlueprintSingle [] [] [] "" 0
 
 
 
 -- drop 1. char -> base64 decompress -> inflate
 
 
-deBase64String : String -> Result String String
-deBase64String =
+decodeBase64 : String -> Result String String
+decodeBase64 =
     Base64.decode << dropLeft 1
 
 
-decodeBlueprintString : Value -> Result String Blueprint
-decodeBlueprintString val =
-    decodeValue blueprintDecoder val
-
+decodeJson : Value -> Result String Blueprint
+decodeJson val =
+    decodeValue decoder val
 
 
 -- idDict : Decoder a -> Decoder (Dict Int a)
 -- idDict a =
 
 
-blueprintDecoder : Decoder Blueprint
-blueprintDecoder =
+decoder : Decoder Blueprint
+decoder =
     let
         blueprintSingle : Decoder BlueprintSingle
         blueprintSingle =
             decode BlueprintSingle
-                |> required "icons" (dict2 int Icon.iconDecoder)
-                |> required "entities" (dict2 int Entity.entityDecoder)
+                |> optional "icons" (list Icon.decoder) []
+                |> optional "entities" (list Entity.decoder) []
+                |> optional "tiles" (list Tile.decoder) []
                 |> required "label" string
                 |> required "version" int
 
         blueprintMulti : Decoder BlueprintMulti
         blueprintMulti =
             decode BlueprintMulti
-                |> required "blueprints" (dict2 int blueprintSingle)
+                |> optional "blueprints" (list blueprintSingle) []
                 |> required "label" string
                 |> required "active_index" int
                 |> required "version" int
     in
         oneOf
-            [ field "blueprint" blueprintSingle |> andThen (\x -> decode (Blueprint x))
-            , field "blueprint_book" blueprintMulti |> andThen (\x -> decode (BlueprintBook x))
+            [ field "blueprint" blueprintSingle |> andThen (succeed << Blueprint)
+            , field "blueprint_book" blueprintMulti |> andThen (succeed << BlueprintBook)
             ]
 
 
