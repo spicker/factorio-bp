@@ -1,20 +1,19 @@
 module Data.Tile exposing (..)
 
-import Json.Decode exposing (Decoder, succeed, float, at, map2,field,string)
+import Json.Decode exposing (Decoder, succeed, map, field, string)
 
 
 type alias Tile =
-    { position : (Float, Float)
-    , name : String}
+    { name : String
+    }
 
 
-empty : Tile 
-empty = 
-    Tile (0,0) ""
+empty : Tile
+empty =
+    Tile ""
 
 
 decoder : Decoder Tile
 decoder =
-    map2 Tile
-        (map2 (,) (at ["position","x"] float) (at ["position","y"] float))
+    map Tile
         (field "name" string)

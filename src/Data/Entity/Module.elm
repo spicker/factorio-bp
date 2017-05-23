@@ -4,9 +4,9 @@ import Json.Decode exposing (..)
 
 
 type alias Module =
-    { name : String, count : Int }
+    { count : Int }
 
 
 decoder : Decoder Module
 decoder =
-    succeed <| Module "" 0
+    map Module (field "count" int)

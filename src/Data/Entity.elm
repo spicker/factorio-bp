@@ -1,65 +1,58 @@
 module Data.Entity exposing (..)
 
-import Data.Entity.Connection as Connection exposing (Connection)
+import Util
+import Data.Entity.RequestFilter as RequestFilter exposing (RequestFilter)
+import Data.Entity.Connection as Connection exposing (Connection, Id(..), Wire(..))
 import Data.Entity.Module as Module exposing (Module)
 import Data.Entity.ControlBehaviour as ConrolBehaviour exposing (ControlBehaviour)
 import Dict exposing (Dict)
 import Json.Decode exposing (..)
-import Json.Decode.Extra exposing (dict2, fromResult)
-import Json.Decode.Pipeline exposing (decode, required, optional, requiredAt, custom, hardcoded)
+import Json.Decode.Pipeline exposing (decode, required, optional, requiredAt, custom, optionalAt)
 
 
 type alias Entity =
     { name : String
     , position : ( Float, Float )
     , direction : Int
-    , connections : List Connection
-    , modules : List Module
+    , connections : Maybe ( ( Id, Wire ), List Connection )
+    , modules : Dict String Module
+    , request_filters : Dict Int RequestFilter
     }
 
 
-type Direction
-    = North
-    | East
-    | South
-    | West
 
-
-empty : Entity
-empty =
-    { name = "", position = ( 0, 0 ), direction = 0, connections = [], modules = [] }
+-- empty : Entity
+-- empty =
+--     Entity "" ( 0, 0 ) 0 [] Dict.empty Dict.empty
 
 
 decoder : Decoder Entity
 decoder =
     let
-        -- convert : Int -> Decoder Direction
-        -- convert d =
-        --     case d of
-        --         0 ->
-        --             succeed North
-        --         2 ->
-        --             succeed West
-        --         4 ->
-        --             succeed South
-        --         6 ->
-        --             succeed East
-        --         _ ->
-        --             fail "Invalid value for Direction"
-        -- direction : Decoder Direction
-        -- direction =
-        --     int |> andThen convert
         position : Decoder ( Float, Float )
         position =
             decode (,)
                 |> requiredAt [ "position", "x" ] float
                 |> requiredAt [ "position", "y" ] float
+
+        connection : ( Id, Wire ) -> Decoder (List Connection)
+        connection ct =
+            let
+                ( connId, connWire ) =
+                    Connection.connectedTo2String ct
+            in
+                at [ connId, connWire ] (list Connection.decoder)
+
+        ctD =
+            Connection.idDecoder2
+
+        conn =
+            map2 (,) ctD (ctD |> andThen connection)
     in
         decode Entity
             |> required "name" string
-            |> custom (map2 (,) (at [ "position", "x" ] float) (at [ "position", "y" ] float))
+            |> custom position
             |> optional "direction" int 0
-            -- |> optional "connections" (list Connection.decoder) []
-            |>
-                hardcoded []
-            |> optional "items" (list Module.decoder) []
+            |> custom (maybe <| field "connections" conn)
+            |> optional "items" (Util.dict (field "item" string) Module.decoder) Dict.empty
+            |> optional "request_filters" (Util.dict (field "index" int) RequestFilter.decoder) Dict.empty

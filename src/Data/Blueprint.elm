@@ -1,13 +1,11 @@
 module Data.Blueprint exposing (..)
 
 import Util
-import Ports exposing (..)
 import Data.Entity as Entity exposing (..)
 import Data.Icon as Icon exposing (Icon)
 import Data.Tile as Tile exposing (Tile)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import Json.Decode.Extra exposing (dict2)
 import Dict exposing (Dict(..))
 import String exposing (dropLeft)
 import Base64
@@ -21,7 +19,7 @@ type Blueprint
 type alias BlueprintSingle =
     { icons : Dict Int Icon
     , entities : Dict Int Entity
-    , tiles : List Tile
+    , tiles : Dict ( Float, Float ) Tile
     , label : String
     , version : Int
     }
@@ -41,7 +39,7 @@ type EncodedBlueprint
 
 empty : Blueprint
 empty =
-    Blueprint <| BlueprintSingle Dict.empty Dict.empty [] "" 0
+    Blueprint <| BlueprintSingle Dict.empty Dict.empty Dict.empty "" 0
 
 
 
@@ -58,11 +56,6 @@ decodeJson val =
     decodeValue decoder val
 
 
-
--- idDict : Decoder a -> Decoder (Dict Int a)
--- idDict a =
-
-
 decoder : Decoder Blueprint
 decoder =
     let
@@ -71,7 +64,7 @@ decoder =
             decode BlueprintSingle
                 |> optional "icons" (Util.dict (field "index" int) Icon.decoder) Dict.empty
                 |> optional "entities" (Util.dict (field "entity_number" int) Entity.decoder) Dict.empty
-                |> optional "tiles" (list Tile.decoder) []
+                |> optional "tiles" (Util.dict (map2 (,) (at [ "position", "x" ] float) (at [ "position", "y" ] float)) Tile.decoder) Dict.empty
                 |> optional "label" string ""
                 |> required "version" int
 
