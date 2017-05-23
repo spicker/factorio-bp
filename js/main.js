@@ -9370,6 +9370,23 @@ var _truqu$elm_base64$Base64$encode = function (s) {
 					_truqu$elm_base64$Base64$toCodeList(s)))));
 };
 
+var _user$project$Util$dict = function (c) {
+	return function (_p0) {
+		return A2(
+			_elm_lang$core$Json_Decode$map,
+			_elm_lang$core$Dict$fromList,
+			_elm_lang$core$Json_Decode$list(
+				A3(
+					_elm_lang$core$Json_Decode$map2,
+					F2(
+						function (v0, v1) {
+							return {ctor: '_Tuple2', _0: v0, _1: v1};
+						}),
+					c,
+					_p0)));
+	};
+};
+
 var _user$project$Ports$inflate = _elm_lang$core$Native_Platform.outgoingPort(
 	'inflate',
 	function (v) {
@@ -9402,21 +9419,17 @@ var _user$project$Data_Entity_Module$decoder = _elm_lang$core$Json_Decode$succee
 
 var _user$project$Data_Entity_ControlBehaviour$ControlBehaviour = {};
 
+var _user$project$Data_Entity$empty = {
+	name: '',
+	position: {ctor: '_Tuple2', _0: 0, _1: 0},
+	direction: 0,
+	connections: {ctor: '[]'},
+	modules: {ctor: '[]'}
+};
 var _user$project$Data_Entity$Entity = F5(
 	function (a, b, c, d, e) {
 		return {name: a, position: b, direction: c, connections: d, modules: e};
 	});
-var _user$project$Data_Entity$West = {ctor: 'West'};
-var _user$project$Data_Entity$South = {ctor: 'South'};
-var _user$project$Data_Entity$East = {ctor: 'East'};
-var _user$project$Data_Entity$North = {ctor: 'North'};
-var _user$project$Data_Entity$empty = {
-	name: '',
-	position: {ctor: '_Tuple2', _0: 0, _1: 0},
-	direction: _user$project$Data_Entity$North,
-	connections: {ctor: '[]'},
-	modules: {ctor: '[]'}
-};
 var _user$project$Data_Entity$decoder = function () {
 	var position = A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$requiredAt,
@@ -9447,22 +9460,6 @@ var _user$project$Data_Entity$decoder = function () {
 					function (v0, v1) {
 						return {ctor: '_Tuple2', _0: v0, _1: v1};
 					}))));
-	var convert = function (d) {
-		var _p0 = d;
-		switch (_p0) {
-			case 0:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$North);
-			case 2:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$West);
-			case 4:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$South);
-			case 6:
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$East);
-			default:
-				return _elm_lang$core$Json_Decode$fail('Invalid value for Direction');
-		}
-	};
-	var direction = A2(_elm_lang$core$Json_Decode$andThen, convert, _elm_lang$core$Json_Decode$int);
 	return A4(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 		'items',
@@ -9474,8 +9471,8 @@ var _user$project$Data_Entity$decoder = function () {
 			A4(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 				'direction',
-				direction,
-				_user$project$Data_Entity$North,
+				_elm_lang$core$Json_Decode$int,
+				0,
 				A2(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
 					A3(
@@ -9514,6 +9511,10 @@ var _user$project$Data_Entity$decoder = function () {
 						_elm_lang$core$Json_Decode$string,
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Entity$Entity))))));
 }();
+var _user$project$Data_Entity$West = {ctor: 'West'};
+var _user$project$Data_Entity$South = {ctor: 'South'};
+var _user$project$Data_Entity$East = {ctor: 'East'};
+var _user$project$Data_Entity$North = {ctor: 'North'};
 
 var _user$project$Data_Icon$empty = {type_: '', name: ''};
 var _user$project$Data_Icon$Icon = F2(
@@ -9548,8 +9549,48 @@ var _user$project$Data_Icon$decoder = A3(
 		},
 		_elm_lang$core$Json_Decode$string));
 
-var _user$project$Data_Tile$Tile = {};
-var _user$project$Data_Tile$decoder = _elm_lang$core$Json_Decode$succeed(_user$project$Data_Tile$Tile);
+var _user$project$Data_Tile$Tile = F2(
+	function (a, b) {
+		return {position: a, name: b};
+	});
+var _user$project$Data_Tile$empty = A2(
+	_user$project$Data_Tile$Tile,
+	{ctor: '_Tuple2', _0: 0, _1: 0},
+	'');
+var _user$project$Data_Tile$decoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_user$project$Data_Tile$Tile,
+	A3(
+		_elm_lang$core$Json_Decode$map2,
+		F2(
+			function (v0, v1) {
+				return {ctor: '_Tuple2', _0: v0, _1: v1};
+			}),
+		A2(
+			_elm_lang$core$Json_Decode$at,
+			{
+				ctor: '::',
+				_0: 'position',
+				_1: {
+					ctor: '::',
+					_0: 'x',
+					_1: {ctor: '[]'}
+				}
+			},
+			_elm_lang$core$Json_Decode$float),
+		A2(
+			_elm_lang$core$Json_Decode$at,
+			{
+				ctor: '::',
+				_0: 'position',
+				_1: {
+					ctor: '::',
+					_0: 'y',
+					_1: {ctor: '[]'}
+				}
+			},
+			_elm_lang$core$Json_Decode$float)),
+	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string));
 
 var _user$project$Data_Blueprint$encodedBlueprintToString = function (_p0) {
 	var _p1 = _p0;
@@ -9579,8 +9620,8 @@ var _user$project$Data_Blueprint$Blueprint = function (a) {
 var _user$project$Data_Blueprint$empty = _user$project$Data_Blueprint$Blueprint(
 	A5(
 		_user$project$Data_Blueprint$BlueprintSingle,
-		{ctor: '[]'},
-		{ctor: '[]'},
+		_elm_lang$core$Dict$empty,
+		_elm_lang$core$Dict$empty,
 		{ctor: '[]'},
 		'',
 		0));
@@ -9592,10 +9633,11 @@ var _user$project$Data_Blueprint$decoder = function () {
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'version',
 		_elm_lang$core$Json_Decode$int,
-		A3(
-			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		A4(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 			'label',
 			_elm_lang$core$Json_Decode$string,
+			'',
 			A4(
 				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 				'tiles',
@@ -9604,13 +9646,19 @@ var _user$project$Data_Blueprint$decoder = function () {
 				A4(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 					'entities',
-					_elm_lang$core$Json_Decode$list(_user$project$Data_Entity$decoder),
-					{ctor: '[]'},
+					A2(
+						_user$project$Util$dict,
+						A2(_elm_lang$core$Json_Decode$field, 'entity_number', _elm_lang$core$Json_Decode$int),
+						_user$project$Data_Entity$decoder),
+					_elm_lang$core$Dict$empty,
 					A4(
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 						'icons',
-						_elm_lang$core$Json_Decode$list(_user$project$Data_Icon$decoder),
-						{ctor: '[]'},
+						A2(
+							_user$project$Util$dict,
+							A2(_elm_lang$core$Json_Decode$field, 'index', _elm_lang$core$Json_Decode$int),
+							_user$project$Data_Icon$decoder),
+						_elm_lang$core$Dict$empty,
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Blueprint$BlueprintSingle))))));
 	var blueprintMulti = A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
@@ -9620,15 +9668,19 @@ var _user$project$Data_Blueprint$decoder = function () {
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 			'active_index',
 			_elm_lang$core$Json_Decode$int,
-			A3(
-				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			A4(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 				'label',
 				_elm_lang$core$Json_Decode$string,
+				'',
 				A4(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 					'blueprints',
-					_elm_lang$core$Json_Decode$list(blueprintSingle),
-					{ctor: '[]'},
+					A2(
+						_user$project$Util$dict,
+						A2(_elm_lang$core$Json_Decode$field, 'index', _elm_lang$core$Json_Decode$int),
+						A2(_elm_lang$core$Json_Decode$field, 'blueprint', blueprintSingle)),
+					_elm_lang$core$Dict$empty,
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Blueprint$BlueprintMulti)))));
 	return _elm_lang$core$Json_Decode$oneOf(
 		{

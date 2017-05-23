@@ -12,7 +12,7 @@ import Json.Decode.Pipeline exposing (decode, required, optional, requiredAt, cu
 type alias Entity =
     { name : String
     , position : ( Float, Float )
-    , direction : Direction
+    , direction : Int
     , connections : List Connection
     , modules : List Module
     }
@@ -27,34 +27,28 @@ type Direction
 
 empty : Entity
 empty =
-    { name = "", position = ( 0, 0 ), direction = North, connections = [], modules = [] }
+    { name = "", position = ( 0, 0 ), direction = 0, connections = [], modules = [] }
 
 
 decoder : Decoder Entity
 decoder =
     let
-        convert : Int -> Decoder Direction
-        convert d =
-            case d of
-                0 ->
-                    succeed North
-
-                2 ->
-                    succeed West
-
-                4 ->
-                    succeed South
-
-                6 ->
-                    succeed East
-
-                _ ->
-                    fail "Invalid value for Direction"
-
-        direction : Decoder Direction
-        direction =
-            int |> andThen convert
-
+        -- convert : Int -> Decoder Direction
+        -- convert d =
+        --     case d of
+        --         0 ->
+        --             succeed North
+        --         2 ->
+        --             succeed West
+        --         4 ->
+        --             succeed South
+        --         6 ->
+        --             succeed East
+        --         _ ->
+        --             fail "Invalid value for Direction"
+        -- direction : Decoder Direction
+        -- direction =
+        --     int |> andThen convert
         position : Decoder ( Float, Float )
         position =
             decode (,)
@@ -64,7 +58,7 @@ decoder =
         decode Entity
             |> required "name" string
             |> custom (map2 (,) (at [ "position", "x" ] float) (at [ "position", "y" ] float))
-            |> optional "direction" direction North
+            |> optional "direction" int 0
             -- |> optional "connections" (list Connection.decoder) []
             |>
                 hardcoded []

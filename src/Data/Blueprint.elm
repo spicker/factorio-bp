@@ -1,5 +1,6 @@
 module Data.Blueprint exposing (..)
 
+import Util
 import Ports exposing (..)
 import Data.Entity as Entity exposing (..)
 import Data.Icon as Icon exposing (Icon)
@@ -18,8 +19,8 @@ type Blueprint
 
 
 type alias BlueprintSingle =
-    { icons : List Icon
-    , entities : List Entity
+    { icons : Dict Int Icon
+    , entities : Dict Int Entity
     , tiles : List Tile
     , label : String
     , version : Int
@@ -27,7 +28,7 @@ type alias BlueprintSingle =
 
 
 type alias BlueprintMulti =
-    { blueprints : List BlueprintSingle
+    { blueprints : Dict Int BlueprintSingle
     , label : String
     , active_index : Int
     , version : Int
@@ -40,7 +41,7 @@ type EncodedBlueprint
 
 empty : Blueprint
 empty =
-    Blueprint <| BlueprintSingle [] [] [] "" 0
+    Blueprint <| BlueprintSingle Dict.empty Dict.empty [] "" 0
 
 
 
@@ -57,6 +58,7 @@ decodeJson val =
     decodeValue decoder val
 
 
+
 -- idDict : Decoder a -> Decoder (Dict Int a)
 -- idDict a =
 
@@ -67,17 +69,17 @@ decoder =
         blueprintSingle : Decoder BlueprintSingle
         blueprintSingle =
             decode BlueprintSingle
-                |> optional "icons" (list Icon.decoder) []
-                |> optional "entities" (list Entity.decoder) []
+                |> optional "icons" (Util.dict (field "index" int) Icon.decoder) Dict.empty
+                |> optional "entities" (Util.dict (field "entity_number" int) Entity.decoder) Dict.empty
                 |> optional "tiles" (list Tile.decoder) []
-                |> required "label" string
+                |> optional "label" string ""
                 |> required "version" int
 
         blueprintMulti : Decoder BlueprintMulti
         blueprintMulti =
             decode BlueprintMulti
-                |> optional "blueprints" (list blueprintSingle) []
-                |> required "label" string
+                |> optional "blueprints" (Util.dict (field "index" int) (field "blueprint" blueprintSingle)) Dict.empty
+                |> optional "label" string ""
                 |> required "active_index" int
                 |> required "version" int
     in
