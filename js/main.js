@@ -9393,9 +9393,18 @@ var _user$project$Data_Entity_Connection$MonoConnection = function (a) {
 	return {ctor: 'MonoConnection', _0: a};
 };
 
-var _user$project$Data_Entity$Entity = F4(
-	function (a, b, c, d) {
-		return {name: a, position: b, direction: c, connections: d};
+var _user$project$Data_Entity_Module$Module = F2(
+	function (a, b) {
+		return {name: a, count: b};
+	});
+var _user$project$Data_Entity_Module$decoder = _elm_lang$core$Json_Decode$succeed(
+	A2(_user$project$Data_Entity_Module$Module, '', 0));
+
+var _user$project$Data_Entity_ControlBehaviour$ControlBehaviour = {};
+
+var _user$project$Data_Entity$Entity = F5(
+	function (a, b, c, d, e) {
+		return {name: a, position: b, direction: c, connections: d, modules: e};
 	});
 var _user$project$Data_Entity$West = {ctor: 'West'};
 var _user$project$Data_Entity$South = {ctor: 'South'};
@@ -9405,9 +9414,39 @@ var _user$project$Data_Entity$empty = {
 	name: '',
 	position: {ctor: '_Tuple2', _0: 0, _1: 0},
 	direction: _user$project$Data_Entity$North,
-	connections: _elm_lang$core$Maybe$Nothing
+	connections: {ctor: '[]'},
+	modules: {ctor: '[]'}
 };
 var _user$project$Data_Entity$decoder = function () {
+	var position = A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$requiredAt,
+		{
+			ctor: '::',
+			_0: 'position',
+			_1: {
+				ctor: '::',
+				_0: 'y',
+				_1: {ctor: '[]'}
+			}
+		},
+		_elm_lang$core$Json_Decode$float,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$requiredAt,
+			{
+				ctor: '::',
+				_0: 'position',
+				_1: {
+					ctor: '::',
+					_0: 'x',
+					_1: {ctor: '[]'}
+				}
+			},
+			_elm_lang$core$Json_Decode$float,
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(
+				F2(
+					function (v0, v1) {
+						return {ctor: '_Tuple2', _0: v0, _1: v1};
+					}))));
 	var convert = function (d) {
 		var _p0 = d;
 		switch (_p0) {
@@ -9423,55 +9462,57 @@ var _user$project$Data_Entity$decoder = function () {
 				return _elm_lang$core$Json_Decode$fail('Invalid value for Direction');
 		}
 	};
-	var direction = function (md) {
-		var _p1 = md;
-		if (_p1.ctor === 'Nothing') {
-			return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity$North);
-		} else {
-			return convert(_p1._0);
-		}
-	};
-	return A5(
-		_elm_lang$core$Json_Decode$map4,
-		_user$project$Data_Entity$Entity,
-		A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
-		A3(
-			_elm_lang$core$Json_Decode$map2,
-			F2(
-				function (v0, v1) {
-					return {ctor: '_Tuple2', _0: v0, _1: v1};
-				}),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'position',
-					_1: {
-						ctor: '::',
-						_0: 'x',
-						_1: {ctor: '[]'}
-					}
-				},
-				_elm_lang$core$Json_Decode$float),
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'position',
-					_1: {
-						ctor: '::',
-						_0: 'y',
-						_1: {ctor: '[]'}
-					}
-				},
-				_elm_lang$core$Json_Decode$float)),
+	var direction = A2(_elm_lang$core$Json_Decode$andThen, convert, _elm_lang$core$Json_Decode$int);
+	return A4(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
+		'items',
+		_elm_lang$core$Json_Decode$list(_user$project$Data_Entity_Module$decoder),
+		{ctor: '[]'},
 		A2(
-			_elm_lang$core$Json_Decode$andThen,
-			direction,
-			_elm_lang$core$Json_Decode$maybe(
-				A2(_elm_lang$core$Json_Decode$field, 'direction', _elm_lang$core$Json_Decode$int))),
-		_elm_lang$core$Json_Decode$maybe(
-			_elm_lang$core$Json_Decode$list(_user$project$Data_Entity_Connection$decoder)));
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$hardcoded,
+			{ctor: '[]'},
+			A4(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
+				'direction',
+				direction,
+				_user$project$Data_Entity$North,
+				A2(
+					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
+					A3(
+						_elm_lang$core$Json_Decode$map2,
+						F2(
+							function (v0, v1) {
+								return {ctor: '_Tuple2', _0: v0, _1: v1};
+							}),
+						A2(
+							_elm_lang$core$Json_Decode$at,
+							{
+								ctor: '::',
+								_0: 'position',
+								_1: {
+									ctor: '::',
+									_0: 'x',
+									_1: {ctor: '[]'}
+								}
+							},
+							_elm_lang$core$Json_Decode$float),
+						A2(
+							_elm_lang$core$Json_Decode$at,
+							{
+								ctor: '::',
+								_0: 'position',
+								_1: {
+									ctor: '::',
+									_0: 'y',
+									_1: {ctor: '[]'}
+								}
+							},
+							_elm_lang$core$Json_Decode$float)),
+					A3(
+						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+						'name',
+						_elm_lang$core$Json_Decode$string,
+						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Entity$Entity))))));
 }();
 
 var _user$project$Data_Icon$empty = {type_: '', name: ''};

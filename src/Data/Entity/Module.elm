@@ -7,6 +7,6 @@ type alias Module =
     { name : String, count : Int }
 
 
-decode : Decoder Module
-decode =
+decoder : Decoder Module
+decoder =
     succeed <| Module "" 0
