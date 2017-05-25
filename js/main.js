@@ -8678,139 +8678,186 @@ var _user$project$Data_Entity_RequestFilter$decoder = A3(
 	A2(_elm_lang$core$Json_Decode$field, 'count', _elm_lang$core$Json_Decode$int),
 	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string));
 
-var _user$project$Data_Entity_Connection$connectedTo2String = function (_p0) {
-	var _p1 = _p0;
-	var idStr = function () {
-		var _p2 = _p1._0;
-		if (_p2.ctor === 'One') {
-			return '1';
-		} else {
-			return '2';
-		}
-	}();
-	var wireStr = function () {
-		var _p3 = _p1._1;
-		if (_p3.ctor === 'Red') {
-			return 'red';
-		} else {
-			return 'green';
-		}
-	}();
-	return {ctor: '_Tuple2', _0: idStr, _1: wireStr};
+var _user$project$Data_Entity_Connections$idToString = function (id) {
+	var _p0 = id;
+	if (_p0.ctor === 'One') {
+		return '1';
+	} else {
+		return '2';
+	}
 };
-var _user$project$Data_Entity_Connection$Connection = F2(
+var _user$project$Data_Entity_Connections$wireToString = function (_p1) {
+	return _elm_lang$core$String$toLower(
+		_elm_lang$core$Basics$toString(_p1));
+};
+var _user$project$Data_Entity_Connections$Connection = F2(
 	function (a, b) {
 		return {entityId: a, circuitId: b};
 	});
-var _user$project$Data_Entity_Connection$empty = A2(_user$project$Data_Entity_Connection$Connection, 0, _elm_lang$core$Maybe$Nothing);
-var _user$project$Data_Entity_Connection$decoder = A3(
+var _user$project$Data_Entity_Connections$empty = A2(_user$project$Data_Entity_Connections$Connection, 0, _elm_lang$core$Maybe$Nothing);
+var _user$project$Data_Entity_Connections$connectionDecoder = A3(
 	_elm_lang$core$Json_Decode$map2,
-	_user$project$Data_Entity_Connection$Connection,
+	_user$project$Data_Entity_Connections$Connection,
 	A2(_elm_lang$core$Json_Decode$field, 'entity_id', _elm_lang$core$Json_Decode$int),
 	_elm_lang$core$Json_Decode$maybe(
 		A2(_elm_lang$core$Json_Decode$field, 'circuit_id', _elm_lang$core$Json_Decode$int)));
-var _user$project$Data_Entity_Connection$Two = {ctor: 'Two'};
-var _user$project$Data_Entity_Connection$One = {ctor: 'One'};
-var _user$project$Data_Entity_Connection$Green = {ctor: 'Green'};
-var _user$project$Data_Entity_Connection$Red = {ctor: 'Red'};
-var _user$project$Data_Entity_Connection$wireDecoder = function (str) {
-	var convertWire = function (str) {
-		var _p4 = str;
-		switch (_p4) {
-			case 'red':
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$Red);
-			case 'green':
-				return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$Green);
-			default:
-				return _elm_lang$core$Json_Decode$fail('Invalid value for Connection.Wire');
-		}
-	};
-	return A2(
-		_elm_lang$core$Json_Decode$andThen,
-		convertWire,
-		A2(_elm_lang$core$Json_Decode$field, str, _elm_lang$core$Json_Decode$string));
-};
-var _user$project$Data_Entity_Connection$idDecoder = function () {
-	var convertId = function (str) {
-		var _p5 = str;
-		switch (_p5) {
-			case '1':
-				return A3(
-					_elm_lang$core$Json_Decode$map2,
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$One),
-					_user$project$Data_Entity_Connection$wireDecoder(str));
-			case '2':
-				return A3(
-					_elm_lang$core$Json_Decode$map2,
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$Two),
-					_user$project$Data_Entity_Connection$wireDecoder(str));
-			default:
-				return A3(
-					_elm_lang$core$Json_Decode$map2,
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					_elm_lang$core$Json_Decode$fail('Invalid value for Connection.Id'),
-					_user$project$Data_Entity_Connection$wireDecoder(str));
-		}
-	};
-	return A2(_elm_lang$core$Json_Decode$andThen, convertId, _elm_lang$core$Json_Decode$string);
-}();
-var _user$project$Data_Entity_Connection$wireDecoder2 = _elm_lang$core$Json_Decode$oneOf(
-	{
-		ctor: '::',
-		_0: A2(
-			_elm_lang$core$Json_Decode$field,
-			'red',
-			_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$Red)),
-		_1: {
-			ctor: '::',
-			_0: A2(
-				_elm_lang$core$Json_Decode$field,
-				'green',
-				_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$Green)),
-			_1: {ctor: '[]'}
-		}
-	});
-var _user$project$Data_Entity_Connection$idDecoder2 = _elm_lang$core$Json_Decode$oneOf(
+var _user$project$Data_Entity_Connections$Two = {ctor: 'Two'};
+var _user$project$Data_Entity_Connections$One = {ctor: 'One'};
+var _user$project$Data_Entity_Connections$idDecoder = _elm_lang$core$Json_Decode$oneOf(
 	{
 		ctor: '::',
 		_0: A2(
 			_elm_lang$core$Json_Decode$field,
 			'1',
-			A3(
-				_elm_lang$core$Json_Decode$map2,
-				F2(
-					function (v0, v1) {
-						return {ctor: '_Tuple2', _0: v0, _1: v1};
-					}),
-				_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$One),
-				_user$project$Data_Entity_Connection$wireDecoder2)),
+			_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$One)),
 		_1: {
 			ctor: '::',
 			_0: A2(
 				_elm_lang$core$Json_Decode$field,
 				'2',
-				A3(
-					_elm_lang$core$Json_Decode$map2,
-					F2(
-						function (v0, v1) {
-							return {ctor: '_Tuple2', _0: v0, _1: v1};
-						}),
-					_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connection$Two),
-					_user$project$Data_Entity_Connection$wireDecoder2)),
+				_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$Two)),
 			_1: {ctor: '[]'}
 		}
 	});
+var _user$project$Data_Entity_Connections$idDecoder2 = function (str) {
+	var _p2 = str;
+	switch (_p2) {
+		case '1':
+			return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$One);
+		case '2':
+			return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$Two);
+		default:
+			return _elm_lang$core$Json_Decode$fail('Invalid value for Connection.Id');
+	}
+};
+var _user$project$Data_Entity_Connections$Green = {ctor: 'Green'};
+var _user$project$Data_Entity_Connections$Red = {ctor: 'Red'};
+var _user$project$Data_Entity_Connections$wireDecoder = _elm_lang$core$Json_Decode$oneOf(
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$core$Json_Decode$field,
+			'red',
+			_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$Red)),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$core$Json_Decode$field,
+				'green',
+				_elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$Green)),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Data_Entity_Connections$wireDecoder2 = function (str) {
+	var _p3 = str;
+	switch (_p3) {
+		case 'red':
+			return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$Red);
+		case 'green':
+			return _elm_lang$core$Json_Decode$succeed(_user$project$Data_Entity_Connections$Green);
+		default:
+			return _elm_lang$core$Json_Decode$fail('Invalid value for Connection.Wire');
+	}
+};
+var _user$project$Data_Entity_Connections$connectedToDecoder = function (_p4) {
+	var _p5 = _p4;
+	var rw = function () {
+		var _p6 = _p5._1;
+		switch (_p6) {
+			case 'red':
+				return _elm_lang$core$Maybe$Just(_user$project$Data_Entity_Connections$Red);
+			case 'green':
+				return _elm_lang$core$Maybe$Just(_user$project$Data_Entity_Connections$Green);
+			default:
+				return _elm_lang$core$Maybe$Nothing;
+		}
+	}();
+	var ri = function () {
+		var _p7 = _p5._0;
+		switch (_p7) {
+			case '1':
+				return _elm_lang$core$Maybe$Just(_user$project$Data_Entity_Connections$One);
+			case '2':
+				return _elm_lang$core$Maybe$Just(_user$project$Data_Entity_Connections$Two);
+			default:
+				return _elm_lang$core$Maybe$Nothing;
+		}
+	}();
+	var _p8 = {ctor: '_Tuple2', _0: ri, _1: rw};
+	if (((_p8.ctor === '_Tuple2') && (_p8._0.ctor === 'Just')) && (_p8._1.ctor === 'Just')) {
+		return _elm_lang$core$Result$Ok(
+			{ctor: '_Tuple2', _0: _p8._0._0, _1: _p8._1._0});
+	} else {
+		return _elm_lang$core$Result$Err('Invalid Connection.Id or Connection.Wire');
+	}
+};
+var _user$project$Data_Entity_Connections$decoder = function () {
+	var convertCt = function (ls) {
+		var _p9 = ls;
+		if (_p9.ctor === '[]') {
+			return _elm_lang$core$Json_Decode$succeed(
+				{ctor: '[]'});
+		} else {
+			var _p10 = _user$project$Data_Entity_Connections$connectedToDecoder(_p9._0._0);
+			if (_p10.ctor === 'Ok') {
+				return A2(
+					_elm_lang$core$Json_Decode$andThen,
+					function (_p11) {
+						return _elm_lang$core$Json_Decode$succeed(
+							A2(
+								F2(
+									function (x, y) {
+										return {ctor: '::', _0: x, _1: y};
+									}),
+								{ctor: '_Tuple2', _0: _p10._0, _1: _p9._0._1},
+								_p11));
+					},
+					convertCt(_p9._1));
+			} else {
+				return _elm_lang$core$Json_Decode$fail(_p10._0);
+			}
+		}
+	};
+	var convertConn = function (ls) {
+		return convertCt(
+			_elm_lang$core$List$concat(
+				A3(
+					_elm_lang$core$List$foldl,
+					F2(
+						function (_p12, acc) {
+							var _p13 = _p12;
+							return {
+								ctor: '::',
+								_0: A3(
+									_elm_lang$core$List$foldl,
+									F2(
+										function (_p14, acc2) {
+											var _p15 = _p14;
+											return {
+												ctor: '::',
+												_0: {
+													ctor: '_Tuple2',
+													_0: {ctor: '_Tuple2', _0: _p13._0, _1: _p15._0},
+													_1: _p15._1
+												},
+												_1: acc2
+											};
+										}),
+									{ctor: '[]'},
+									_p13._1),
+								_1: acc
+							};
+						}),
+					{ctor: '[]'},
+					ls)));
+	};
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		convertConn,
+		_elm_lang$core$Json_Decode$keyValuePairs(
+			_elm_lang$core$Json_Decode$keyValuePairs(
+				_elm_lang$core$Json_Decode$list(_user$project$Data_Entity_Connections$connectionDecoder))));
+}();
 
 var _user$project$Data_Entity_Module$Module = function (a) {
 	return {count: a};
@@ -8820,39 +8867,45 @@ var _user$project$Data_Entity_Module$decoder = A2(
 	_user$project$Data_Entity_Module$Module,
 	A2(_elm_lang$core$Json_Decode$field, 'count', _elm_lang$core$Json_Decode$int));
 
+var _user$project$Data_Signal$empty = {type_: '', name: ''};
+var _user$project$Data_Signal$Signal = F2(
+	function (a, b) {
+		return {type_: a, name: b};
+	});
+var _user$project$Data_Signal$decoder = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_user$project$Data_Signal$Signal,
+	A2(_elm_lang$core$Json_Decode$field, 'type', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string));
+
 var _user$project$Data_Entity_ControlBehaviour$ControlBehaviour = {};
+var _user$project$Data_Entity_ControlBehaviour$InserterCondition = function (a) {
+	return {ctor: 'InserterCondition', _0: a};
+};
+var _user$project$Data_Entity_ControlBehaviour$RailCondition = function (a) {
+	return {ctor: 'RailCondition', _0: a};
+};
+var _user$project$Data_Entity_ControlBehaviour$LogisticCondition = function (a) {
+	return {ctor: 'LogisticCondition', _0: a};
+};
+var _user$project$Data_Entity_ControlBehaviour$Filters = function (a) {
+	return {ctor: 'Filters', _0: a};
+};
+var _user$project$Data_Entity_ControlBehaviour$CircuitConditions = function (a) {
+	return {ctor: 'CircuitConditions', _0: a};
+};
+var _user$project$Data_Entity_ControlBehaviour$DeciderConditions = function (a) {
+	return {ctor: 'DeciderConditions', _0: a};
+};
+var _user$project$Data_Entity_ControlBehaviour$ArtihmeticConditions = function (a) {
+	return {ctor: 'ArtihmeticConditions', _0: a};
+};
 
 var _user$project$Data_Entity$Entity = F6(
 	function (a, b, c, d, e, f) {
 		return {name: a, position: b, direction: c, connections: d, modules: e, request_filters: f};
 	});
 var _user$project$Data_Entity$decoder = function () {
-	var ctD = _user$project$Data_Entity_Connection$idDecoder2;
-	var connection = function (ct) {
-		var _p0 = _user$project$Data_Entity_Connection$connectedTo2String(ct);
-		var connId = _p0._0;
-		var connWire = _p0._1;
-		return A2(
-			_elm_lang$core$Json_Decode$at,
-			{
-				ctor: '::',
-				_0: connId,
-				_1: {
-					ctor: '::',
-					_0: connWire,
-					_1: {ctor: '[]'}
-				}
-			},
-			_elm_lang$core$Json_Decode$list(_user$project$Data_Entity_Connection$decoder));
-	};
-	var conn = A3(
-		_elm_lang$core$Json_Decode$map2,
-		F2(
-			function (v0, v1) {
-				return {ctor: '_Tuple2', _0: v0, _1: v1};
-			}),
-		ctD,
-		A2(_elm_lang$core$Json_Decode$andThen, connection, ctD));
 	var position = A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$requiredAt,
 		{
@@ -8898,10 +8951,11 @@ var _user$project$Data_Entity$decoder = function () {
 				A2(_elm_lang$core$Json_Decode$field, 'item', _elm_lang$core$Json_Decode$string),
 				_user$project$Data_Entity_Module$decoder),
 			_elm_lang$core$Dict$empty,
-			A2(
-				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$custom,
-				_elm_lang$core$Json_Decode$maybe(
-					A2(_elm_lang$core$Json_Decode$field, 'connections', conn)),
+			A4(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
+				'connections',
+				_user$project$Data_Entity_Connections$decoder,
+				{ctor: '[]'},
 				A4(
 					_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$optional,
 					'direction',
@@ -8916,39 +8970,6 @@ var _user$project$Data_Entity$decoder = function () {
 							_elm_lang$core$Json_Decode$string,
 							_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Entity$Entity)))))));
 }();
-
-var _user$project$Data_Icon$empty = {type_: '', name: ''};
-var _user$project$Data_Icon$Icon = F2(
-	function (a, b) {
-		return {type_: a, name: b};
-	});
-var _user$project$Data_Icon$decoder = A3(
-	_elm_lang$core$Json_Decode$map2,
-	_user$project$Data_Icon$Icon,
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'signal',
-			_1: {
-				ctor: '::',
-				_0: 'type',
-				_1: {ctor: '[]'}
-			}
-		},
-		_elm_lang$core$Json_Decode$string),
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'signal',
-			_1: {
-				ctor: '::',
-				_0: 'name',
-				_1: {ctor: '[]'}
-			}
-		},
-		_elm_lang$core$Json_Decode$string));
 
 var _user$project$Data_Tile$Tile = function (a) {
 	return {name: a};
@@ -9050,7 +9071,7 @@ var _user$project$Data_Blueprint$decoder = function () {
 						A2(
 							_user$project$Util$dict,
 							A2(_elm_lang$core$Json_Decode$field, 'index', _elm_lang$core$Json_Decode$int),
-							_user$project$Data_Icon$decoder),
+							A2(_elm_lang$core$Json_Decode$field, 'signal', _user$project$Data_Signal$decoder)),
 						_elm_lang$core$Dict$empty,
 						_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Blueprint$BlueprintSingle))))));
 	var blueprintMulti = A3(

@@ -2,7 +2,7 @@ module Data.Blueprint exposing (..)
 
 import Util
 import Data.Entity as Entity exposing (..)
-import Data.Icon as Icon exposing (Icon)
+import Data.Signal as Signal exposing (Signal)
 import Data.Tile as Tile exposing (Tile)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
@@ -17,7 +17,7 @@ type Blueprint
 
 
 type alias BlueprintSingle =
-    { icons : Dict Int Icon
+    { icons : Dict Int Signal
     , entities : Dict Int Entity
     , tiles : Dict ( Float, Float ) Tile
     , label : String
@@ -62,7 +62,7 @@ decoder =
         blueprintSingle : Decoder BlueprintSingle
         blueprintSingle =
             decode BlueprintSingle
-                |> optional "icons" (Util.dict (field "index" int) Icon.decoder) Dict.empty
+                |> optional "icons" (Util.dict (field "index" int) (field "signal" Signal.decoder)) Dict.empty
                 |> optional "entities" (Util.dict (field "entity_number" int) Entity.decoder) Dict.empty
                 |> optional "tiles" (Util.dict (map2 (,) (at [ "position", "x" ] float) (at [ "position", "y" ] float)) Tile.decoder) Dict.empty
                 |> optional "label" string ""

@@ -7,6 +7,7 @@ import Html.Attributes as HA exposing (class)
 import Html.Events exposing (onClick, onInput)
 import Dict exposing (Dict)
 import Json.Decode exposing (Value, decodeString, value)
+import Json.Encode exposing (encode)
 
 
 main : Program Never Model Msg
