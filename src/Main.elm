@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import View.Grid as Grid
 import Data.Blueprint as BP exposing (Blueprint, EncodedBlueprint)
 import Ports exposing (..)
 import Html exposing (..)
@@ -27,9 +28,8 @@ main =
 type alias Model =
     { statusText : String
     , blueprint : Blueprint
-    , blueprintString : EncodedBlueprint
     , tiles : Dict ( Int, Int ) Bool
-    , bpTextarea : String
+    , blueprintString : String
     }
 
 
@@ -37,9 +37,8 @@ model : Model
 model =
     { statusText = ""
     , blueprint = BP.empty
-    , blueprintString = BP.encodeBlueprint BP.empty
     , tiles = Dict.empty
-    , bpTextarea = ""
+    , blueprintString = ""
     }
 
 
@@ -56,7 +55,7 @@ type Msg
     | EncodeBlueprint
       -- | GenerateUrl
     | InflatedValue Value
-    | BpTextareaInput String
+    | BpInput String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -66,9 +65,9 @@ update msg model =
             ( model, Cmd.none )
 
         DecodeBlueprint ->
-            case decodeString value model.bpTextarea of
+            case decodeString value model.blueprintString of
                 Err _ ->
-                    case BP.decodeBase64 model.bpTextarea of
+                    case BP.decodeBase64 model.blueprintString of
                         Ok str ->
                             ( model, inflate str )
 
@@ -88,10 +87,10 @@ update msg model =
             { model | statusText = e } ! []
 
         NewBlueprint ->
-            { model | statusText = "Created New Blueprint", blueprintString = BP.encodeBlueprint BP.empty, blueprint = BP.empty } ! []
+            { model | statusText = "Created New Blueprint", blueprintString = "", blueprint = BP.empty } ! []
 
         EncodeBlueprint ->
-            ( { model | blueprintString = BP.encodeBlueprint model.blueprint }, Cmd.none )
+            update NoOp model
 
         InflatedValue val ->
             case BP.decodeJson <| Debug.log "value: " val of
@@ -101,8 +100,8 @@ update msg model =
                 Err e ->
                     update (Error e) model
 
-        BpTextareaInput str ->
-            ( { model | bpTextarea = str }, Cmd.none )
+        BpInput str ->
+            ( { model | blueprintString = str }, Cmd.none )
 
 
 
@@ -111,12 +110,13 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "container" ]
         [ div [ class "blueprint-input" ]
-            [ textarea [ onInput BpTextareaInput, HA.rows 5, HA.cols 40 ] []
+            [ textarea [ onInput BpInput, HA.rows 5, HA.cols 40 ] []
             , button [ onClick DecodeBlueprint ] [ text "decode" ]
             , text model.statusText
             ]
+        , Grid.view
         , div []
             [ text <| toString model.blueprint ]
         ]

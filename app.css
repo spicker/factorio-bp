@@ -1,0 +1,23 @@
+.container {
+    width: 100%;
+}
+
+.grid-container {
+    display: grid;
+    border: 1px solid black;
+    /*grid-template-rows: 10% repeat(3, 40px) 10%;
+    grid-teplate-columns: 10% repeat(3, 40px) 10%;*/
+    /*grid-gap: 1fr;*/
+    margin: 1rem;
+    width: 80vh;
+    height: 80vh;
+}
+
+.grid-item {
+    /*background-color: black;*/
+    border: 1px solid black;
+}
+
+.grid-item:hover {
+    background-color: red;
+}

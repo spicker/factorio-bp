@@ -9129,6 +9129,149 @@ var _user$project$Data_Blueprint$encodeBlueprint = function (bp) {
 	return _user$project$Data_Blueprint$EncodedBlueprint('');
 };
 
+var _user$project$View_Grid$exGrid = function (n) {
+	return A3(
+		_elm_lang$core$List$map2,
+		F2(
+			function (v0, v1) {
+				return {ctor: '_Tuple2', _0: v0, _1: v1};
+			}),
+		A2(
+			_elm_lang$core$List$concatMap,
+			_elm_lang$core$List$repeat(n),
+			A2(_elm_lang$core$List$range, 1, n)),
+		_elm_lang$core$List$concat(
+			A2(
+				_elm_lang$core$List$repeat,
+				n,
+				A2(_elm_lang$core$List$range, 1, n))));
+};
+var _user$project$View_Grid$n = 40;
+var _user$project$View_Grid_ops = _user$project$View_Grid_ops || {};
+_user$project$View_Grid_ops['=>'] = F2(
+	function (v0, v1) {
+		return {ctor: '_Tuple2', _0: v0, _1: v1};
+	});
+var _user$project$View_Grid$gridItem = function (_p0) {
+	var _p1 = _p0;
+	var _p3 = _p1._1;
+	var _p2 = _p1._0;
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('grid-item'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: A2(
+							_user$project$View_Grid_ops['=>'],
+							'grid-row',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(_p3),
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'/',
+									_elm_lang$core$Basics$toString(_p3 + 1)))),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_user$project$View_Grid_ops['=>'],
+								'grid-column',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(_p2),
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'/',
+										_elm_lang$core$Basics$toString(_p2 + 1)))),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		{ctor: '[]'});
+};
+var _user$project$View_Grid$GridTile = function (a) {
+	return {occupied: a};
+};
+var _user$project$View_Grid$init = function (_p4) {
+	var _p5 = _p4;
+	return _elm_lang$core$Dict$fromList(
+		A2(
+			_elm_lang$core$List$map,
+			A2(
+				_elm_lang$core$Basics$flip,
+				F2(
+					function (v0, v1) {
+						return {ctor: '_Tuple2', _0: v0, _1: v1};
+					}),
+				_user$project$View_Grid$GridTile(false)),
+			A2(
+				_elm_lang$core$List$concatMap,
+				function (x) {
+					return A2(
+						_elm_lang$core$List$concatMap,
+						function (y) {
+							return {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: x, _1: y},
+								_1: {ctor: '[]'}
+							};
+						},
+						A2(_elm_lang$core$List$range, 1, _p5._1));
+				},
+				A2(_elm_lang$core$List$range, 1, _p5._0))));
+};
+var _user$project$View_Grid$view = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('grid-container'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$style(
+				{
+					ctor: '::',
+					_0: A2(
+						_user$project$View_Grid_ops['=>'],
+						'grid-template-rows',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'repeat(',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(_user$project$View_Grid$n),
+								', 1fr)'))),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_user$project$View_Grid_ops['=>'],
+							'grid-template-columns',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'repeat(',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(_user$project$View_Grid$n),
+									', 1fr)'))),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: {ctor: '[]'}
+		}
+	},
+	A2(
+		_elm_lang$core$List$map,
+		_user$project$View_Grid$gridItem,
+		_elm_lang$core$Dict$keys(
+			_user$project$View_Grid$init(
+				{ctor: '_Tuple2', _0: _user$project$View_Grid$n, _1: _user$project$View_Grid$n}))));
+
 var _user$project$Ports$inflate = _elm_lang$core$Native_Platform.outgoingPort(
 	'inflate',
 	function (v) {
@@ -9136,19 +9279,13 @@ var _user$project$Ports$inflate = _elm_lang$core$Native_Platform.outgoingPort(
 	});
 var _user$project$Ports$inflated = _elm_lang$core$Native_Platform.incomingPort('inflated', _elm_lang$core$Json_Decode$value);
 
-var _user$project$Main$model = {
-	statusText: '',
-	blueprint: _user$project$Data_Blueprint$empty,
-	blueprintString: _user$project$Data_Blueprint$encodeBlueprint(_user$project$Data_Blueprint$empty),
-	tiles: _elm_lang$core$Dict$empty,
-	bpTextarea: ''
-};
-var _user$project$Main$Model = F5(
-	function (a, b, c, d, e) {
-		return {statusText: a, blueprint: b, blueprintString: c, tiles: d, bpTextarea: e};
+var _user$project$Main$model = {statusText: '', blueprint: _user$project$Data_Blueprint$empty, tiles: _elm_lang$core$Dict$empty, blueprintString: ''};
+var _user$project$Main$Model = F4(
+	function (a, b, c, d) {
+		return {statusText: a, blueprint: b, tiles: c, blueprintString: d};
 	});
-var _user$project$Main$BpTextareaInput = function (a) {
-	return {ctor: 'BpTextareaInput', _0: a};
+var _user$project$Main$BpInput = function (a) {
+	return {ctor: 'BpInput', _0: a};
 };
 var _user$project$Main$InflatedValue = function (a) {
 	return {ctor: 'InflatedValue', _0: a};
@@ -9161,6 +9298,83 @@ var _user$project$Main$NewBlueprint = {ctor: 'NewBlueprint'};
 var _user$project$Main$Error = function (a) {
 	return {ctor: 'Error', _0: a};
 };
+var _user$project$Main$DecodeBlueprint = {ctor: 'DecodeBlueprint'};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('container'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('blueprint-input'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$textarea,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$BpInput),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$rows(5),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$cols(40),
+									_1: {ctor: '[]'}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$DecodeBlueprint),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('decode'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(model.statusText),
+							_1: {ctor: '[]'}
+						}
+					}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _user$project$View_Grid$view,
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(model.blueprint)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _user$project$Main$NoOp = {ctor: 'NoOp'};
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		update:
@@ -9170,9 +9384,9 @@ var _user$project$Main$update = F2(
 				case 'NoOp':
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'DecodeBlueprint':
-					var _p1 = A2(_elm_lang$core$Json_Decode$decodeString, _elm_lang$core$Json_Decode$value, model.bpTextarea);
+					var _p1 = A2(_elm_lang$core$Json_Decode$decodeString, _elm_lang$core$Json_Decode$value, model.blueprintString);
 					if (_p1.ctor === 'Err') {
-						var _p2 = _user$project$Data_Blueprint$decodeBase64(model.bpTextarea);
+						var _p2 = _user$project$Data_Blueprint$decodeBase64(model.blueprintString);
 						if (_p2.ctor === 'Ok') {
 							return {
 								ctor: '_Tuple2',
@@ -9216,22 +9430,14 @@ var _user$project$Main$update = F2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
 						_elm_lang$core$Native_Utils.update(
 							model,
-							{
-								statusText: 'Created New Blueprint',
-								blueprintString: _user$project$Data_Blueprint$encodeBlueprint(_user$project$Data_Blueprint$empty),
-								blueprint: _user$project$Data_Blueprint$empty
-							}),
+							{statusText: 'Created New Blueprint', blueprintString: '', blueprint: _user$project$Data_Blueprint$empty}),
 						{ctor: '[]'});
 				case 'EncodeBlueprint':
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								blueprintString: _user$project$Data_Blueprint$encodeBlueprint(model.blueprint)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
+					var _v8 = _user$project$Main$NoOp,
+						_v9 = model;
+					msg = _v8;
+					model = _v9;
+					continue update;
 				case 'InflatedValue':
 					var _p4 = _user$project$Data_Blueprint$decodeJson(
 						A2(_elm_lang$core$Debug$log, 'value: ', _p0._0));
@@ -9244,10 +9450,10 @@ var _user$project$Main$update = F2(
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					} else {
-						var _v9 = _user$project$Main$Error(_p4._0),
-							_v10 = model;
-						msg = _v9;
-						model = _v10;
+						var _v11 = _user$project$Main$Error(_p4._0),
+							_v12 = model;
+						msg = _v11;
+						model = _v12;
 						continue update;
 					}
 				default:
@@ -9255,80 +9461,12 @@ var _user$project$Main$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{bpTextarea: _p0._0}),
+							{blueprintString: _p0._0}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 			}
 		}
 	});
-var _user$project$Main$DecodeBlueprint = {ctor: 'DecodeBlueprint'};
-var _user$project$Main$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$class('blueprint-input'),
-					_1: {ctor: '[]'}
-				},
-				{
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$textarea,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$BpTextareaInput),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$rows(5),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$cols(40),
-									_1: {ctor: '[]'}
-								}
-							}
-						},
-						{ctor: '[]'}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$button,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$DecodeBlueprint),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('decode'),
-								_1: {ctor: '[]'}
-							}),
-						_1: {
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(model.statusText),
-							_1: {ctor: '[]'}
-						}
-					}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(
-							_elm_lang$core$Basics$toString(model.blueprint)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
-};
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{
 		init: {ctor: '_Tuple2', _0: _user$project$Main$model, _1: _elm_lang$core$Platform_Cmd$none},
@@ -9336,7 +9474,6 @@ var _user$project$Main$main = _elm_lang$html$Html$program(
 		update: _user$project$Main$update,
 		subscriptions: _user$project$Main$subscriptions
 	})();
-var _user$project$Main$NoOp = {ctor: 'NoOp'};
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
