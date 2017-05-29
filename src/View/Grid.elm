@@ -1,7 +1,9 @@
 module View.Grid exposing (..)
 
 import Util
+import Data.GameEntity as GameEntity exposing (GameEntity, GameEntities, genericGameEntity)
 import Data.Blueprint as BP exposing (Blueprint)
+import Data.Entity as Entity exposing (Entity)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Dict exposing (Dict)
@@ -61,9 +63,12 @@ getSize =
     Util.getSize << Dict.keys
 
 
-view : Grid -> Html msg
-view g =
+view : Blueprint -> GameEntities -> Html msg
+view bp ge =
     let
+        g =
+            fromBlueprint bp
+
         ( n, m ) =
             getSize g
 
@@ -96,26 +101,84 @@ view g =
                     , "grid-template-columns" => columns
                     ]
             ]
-            (List.map gridItem (Dict.toList g))
+            -- (List.map gridItem (Dict.toList g))
+            (List.map (gridItem2 ge) (Dict.values (.entities <| BP.getActiveBlueprint bp)))
 
 
-gridItem : ( ( Int, Int ), GridTile ) -> Html msg
-gridItem ( ( x, y ), gt ) =
+-- gridItem : ( ( Int, Int ), GridTile ) -> Html msg
+-- gridItem ( ( x, y ), gt ) =
+--     let
+--         occ =
+--             if gt == GridTile True then
+--                 (class "grid-item occupied")
+--             else
+--                 (class "grid-item")
+
+--         str s n =
+--             s ++ toString n ++ "-start / " ++ s ++ toString n ++ "-end"
+--     in
+--         div
+--             [ occ
+--             , style
+--                 [ "grid-row" => str "row" y
+--                 , "grid-column" => str "column" x
+--                 ]
+--             ]
+--             []
+
+
+gridItem2 : GameEntities -> Entity -> Html msg
+gridItem2 ges entity =
     let
-        occ =
-            if gt == GridTile True then
-                (class "grid-item occupied")
-            else
-                (class "grid-item")
+        ( xe, ye ) =
+            entity.position
 
-        str s n =
-            s ++ toString n ++ "-start / " ++ s ++ toString n ++ "-end"
+        ge =
+            Dict.get entity.name ges |> Maybe.withDefault (genericGameEntity entity.name)
+
+        ( xs, ys ) =
+            let
+                ( xs, ys ) =
+                    ge.size
+            in
+                case entity.direction of
+                    0 ->
+                        ( xs, ys )
+
+                    2 ->
+                        ( ys, xs )
+
+                    4 ->
+                        ( xs, ys )
+
+                    6 ->
+                        ( ys, xs )
+
+                    _ ->
+                        ( xs, ys )
+
+        fromTo pos size =
+            ( pos - (toFloat (size - 1)) / 2 |> floor, pos + (toFloat (size - 1)) / 2 |> floor )
+
+        ( x1, x2 ) =
+            fromTo xe xs
+
+        ( y1, y2 ) =
+            fromTo ye ys
+
+        str s a b =
+            s ++ toString a ++ "-start / " ++ s ++ toString b ++ "-end"
+
+        texture = 
+            case ge.sprite of 
+                Just str -> img [src str] []
+                Nothing -> text ge.label
     in
         div
-            [ occ
+            [ class "grid-item"
             , style
-                [ "grid-row" => str "row" y
-                , "grid-column" => str "column" x
+                [ "grid-row" => str "row" y1 y2
+                , "grid-column" => str "column" x1 x2
                 ]
             ]
-            []
+            [ texture ]

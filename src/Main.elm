@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import View.Grid as Grid
+import Data.GameEntity as GameEntity exposing (GameEntity, GameEntities, genericGameEntity)
 import Data.Blueprint as BP exposing (Blueprint, EncodedBlueprint)
 import Ports exposing (..)
 import Html exposing (..)
@@ -30,6 +31,7 @@ type alias Model =
     , blueprint : Blueprint
     , tiles : Dict ( Int, Int ) Bool
     , blueprintString : String
+    , gameEntities : GameEntities
     }
 
 
@@ -39,6 +41,7 @@ model =
     , blueprint = BP.empty
     , tiles = Dict.empty
     , blueprintString = ""
+    , gameEntities = GameEntity.exGES
     }
 
 
@@ -56,6 +59,7 @@ type Msg
       -- | GenerateUrl
     | InflatedValue Value
     | BpInput String
+    | LoadGameEntities
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -102,7 +106,9 @@ update msg model =
 
         BpInput str ->
             ( { model | blueprintString = str }, Cmd.none )
-            
+
+        LoadGameEntities ->
+            ( { model | gameEntities = GameEntity.exGES }, Cmd.none )
 
 
 
@@ -117,7 +123,7 @@ view model =
             , button [ onClick DecodeBlueprint ] [ text "decode" ]
             , text model.statusText
             ]
-        , Grid.view (Grid.fromBlueprint model.blueprint)
+        , Grid.view model.blueprint model.gameEntities
         , div []
             [ text <| toString model.blueprint ]
         ]

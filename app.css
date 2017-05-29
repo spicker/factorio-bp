@@ -11,12 +11,17 @@
     /*margin: 1rem;*/
     width: 50vh;
     height: 50vh;
-    grid-gap: 1px;
+    grid-gap: 0px;
+    align-items: stretch;
+    justify-items: stretch;
 }
 
 .grid-item {
     /*background-color: black;*/
     border: 1px solid black;
+    font-size: 1.5vh;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .grid-item:hover {
