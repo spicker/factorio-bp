@@ -11,7 +11,8 @@ import Json.Decode.Pipeline exposing (decode, required, optional, requiredAt, cu
 
 
 type alias Entity =
-    { name : String
+    { entity_number : Int
+    , name : String
     , position : ( Float, Float )
     , direction : Int
     , connections : Connections
@@ -48,6 +49,7 @@ decoder =
         --     map2 (,) ctD (ctD |> andThen connections)
     in
         decode Entity
+            |> required "entity_number" int
             |> required "name" string
             |> custom position
             |> optional "direction" int 0

@@ -102,6 +102,7 @@ update msg model =
 
         BpInput str ->
             ( { model | blueprintString = str }, Cmd.none )
+            
 
 
 
@@ -116,7 +117,7 @@ view model =
             , button [ onClick DecodeBlueprint ] [ text "decode" ]
             , text model.statusText
             ]
-        , Grid.view
+        , Grid.view (Grid.fromBlueprint model.blueprint)
         , div []
             [ text <| toString model.blueprint ]
         ]

@@ -8,9 +8,10 @@
     /*grid-template-rows: 10% repeat(3, 40px) 10%;
     grid-teplate-columns: 10% repeat(3, 40px) 10%;*/
     /*grid-gap: 1fr;*/
-    margin: 1rem;
-    width: 80vh;
-    height: 80vh;
+    /*margin: 1rem;*/
+    width: 50vh;
+    height: 50vh;
+    grid-gap: 1px;
 }
 
 .grid-item {
@@ -20,4 +21,8 @@
 
 .grid-item:hover {
     background-color: red;
+}
+
+ .occupied:hover {
+    background-color: blue;
 }

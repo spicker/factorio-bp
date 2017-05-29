@@ -8650,8 +8650,41 @@ var _truqu$elm_base64$Base64$encode = function (s) {
 					_truqu$elm_base64$Base64$toCodeList(s)))));
 };
 
+var _user$project$Util$getSize = function (ls) {
+	var lss = _elm_lang$core$Tuple$second(
+		_elm_lang$core$List$unzip(ls));
+	var _p0 = {
+		ctor: '_Tuple2',
+		_0: A2(
+			_elm_lang$core$Maybe$withDefault,
+			0,
+			_elm_lang$core$List$minimum(lss)),
+		_1: A2(
+			_elm_lang$core$Maybe$withDefault,
+			0,
+			_elm_lang$core$List$maximum(lss))
+	};
+	var ymin = _p0._0;
+	var ymax = _p0._1;
+	var lsf = _elm_lang$core$Tuple$first(
+		_elm_lang$core$List$unzip(ls));
+	var _p1 = {
+		ctor: '_Tuple2',
+		_0: A2(
+			_elm_lang$core$Maybe$withDefault,
+			0,
+			_elm_lang$core$List$minimum(lsf)),
+		_1: A2(
+			_elm_lang$core$Maybe$withDefault,
+			0,
+			_elm_lang$core$List$maximum(lsf))
+	};
+	var xmin = _p1._0;
+	var xmax = _p1._1;
+	return {ctor: '_Tuple2', _0: xmax - xmin, _1: ymax - ymin};
+};
 var _user$project$Util$dict = function (c) {
-	return function (_p0) {
+	return function (_p2) {
 		return A2(
 			_elm_lang$core$Json_Decode$map,
 			_elm_lang$core$Dict$fromList,
@@ -8663,7 +8696,7 @@ var _user$project$Util$dict = function (c) {
 							return {ctor: '_Tuple2', _0: v0, _1: v1};
 						}),
 					c,
-					_p0)));
+					_p2)));
 	};
 };
 
@@ -8901,9 +8934,9 @@ var _user$project$Data_Entity_ControlBehaviour$ArtihmeticConditions = function (
 	return {ctor: 'ArtihmeticConditions', _0: a};
 };
 
-var _user$project$Data_Entity$Entity = F6(
-	function (a, b, c, d, e, f) {
-		return {name: a, position: b, direction: c, connections: d, modules: e, request_filters: f};
+var _user$project$Data_Entity$Entity = F7(
+	function (a, b, c, d, e, f, g) {
+		return {entity_number: a, name: b, position: c, direction: d, connections: e, modules: f, request_filters: g};
 	});
 var _user$project$Data_Entity$decoder = function () {
 	var position = A3(
@@ -8968,7 +9001,11 @@ var _user$project$Data_Entity$decoder = function () {
 							_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 							'name',
 							_elm_lang$core$Json_Decode$string,
-							_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Entity$Entity)))))));
+							A3(
+								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+								'entity_number',
+								_elm_lang$core$Json_Decode$int,
+								_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Data_Entity$Entity))))))));
 }();
 
 var _user$project$Data_Tile$Tile = function (a) {
@@ -8995,6 +9032,83 @@ var _user$project$Data_Blueprint$BlueprintSingle = F5(
 	function (a, b, c, d, e) {
 		return {icons: a, entities: b, tiles: c, label: d, version: e};
 	});
+var _user$project$Data_Blueprint$emptySingle = A5(_user$project$Data_Blueprint$BlueprintSingle, _elm_lang$core$Dict$empty, _elm_lang$core$Dict$empty, _elm_lang$core$Dict$empty, '', 0);
+var _user$project$Data_Blueprint$getActiveBlueprint = function (bp) {
+	var _p3 = bp;
+	if (_p3.ctor === 'BlueprintBook') {
+		var _p4 = _p3._0;
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			_user$project$Data_Blueprint$emptySingle,
+			A2(_elm_lang$core$Dict$get, _p4.active_index, _p4.blueprints));
+	} else {
+		return _p3._0;
+	}
+};
+var _user$project$Data_Blueprint$occupiedTiles = function (bp) {
+	var f = F2(
+		function (e, acc) {
+			var isWhole = function (a) {
+				return A2(
+					F2(
+						function (x, y) {
+							return _elm_lang$core$Native_Utils.eq(x, y);
+						}),
+					0,
+					_elm_lang$core$Basics$ceiling(a) - _elm_lang$core$Basics$floor(a));
+			};
+			var _p5 = e.position;
+			var x = _p5._0;
+			var y = _p5._1;
+			var _p6 = {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Basics$floor(x),
+				_1: _elm_lang$core$Basics$floor(y)
+			};
+			var tf = _p6;
+			var xf = _p6._0;
+			var yf = _p6._1;
+			var _p7 = {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Basics$ceiling(x),
+				_1: _elm_lang$core$Basics$ceiling(y)
+			};
+			var tc = _p7;
+			var xc = _p7._0;
+			var yc = _p7._1;
+			var _p8 = {
+				ctor: '_Tuple2',
+				_0: isWhole(x),
+				_1: isWhole(y)
+			};
+			if (((_p8.ctor === '_Tuple2') && (_p8._0 === true)) && (_p8._1 === true)) {
+				return {ctor: '::', _0: tf, _1: acc};
+			} else {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
+						ctor: '::',
+						_0: tf,
+						_1: {
+							ctor: '::',
+							_0: tc,
+							_1: {ctor: '[]'}
+						}
+					},
+					acc);
+			}
+		});
+	var bps = _user$project$Data_Blueprint$getActiveBlueprint(bp);
+	return A3(
+		_elm_lang$core$List$foldr,
+		f,
+		{ctor: '[]'},
+		_elm_lang$core$Dict$values(bps.entities));
+};
+var _user$project$Data_Blueprint$getSize = function (_p9) {
+	return _user$project$Util$getSize(
+		_user$project$Data_Blueprint$occupiedTiles(_p9));
+};
 var _user$project$Data_Blueprint$BlueprintMulti = F4(
 	function (a, b, c, d) {
 		return {blueprints: a, label: b, active_index: c, version: d};
@@ -9005,12 +9119,43 @@ var _user$project$Data_Blueprint$BlueprintBook = function (a) {
 var _user$project$Data_Blueprint$Blueprint = function (a) {
 	return {ctor: 'Blueprint', _0: a};
 };
-var _user$project$Data_Blueprint$empty = _user$project$Data_Blueprint$Blueprint(
-	A5(_user$project$Data_Blueprint$BlueprintSingle, _elm_lang$core$Dict$empty, _elm_lang$core$Dict$empty, _elm_lang$core$Dict$empty, '', 0));
+var _user$project$Data_Blueprint$empty = _user$project$Data_Blueprint$Blueprint(_user$project$Data_Blueprint$emptySingle);
 var _user$project$Data_Blueprint$decodeBlueprint = function (ebp) {
 	return _user$project$Data_Blueprint$empty;
 };
 var _user$project$Data_Blueprint$decoder = function () {
+	var position = function (da) {
+		return A3(
+			_elm_lang$core$Json_Decode$map2,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			A2(
+				_elm_lang$core$Json_Decode$at,
+				{
+					ctor: '::',
+					_0: 'position',
+					_1: {
+						ctor: '::',
+						_0: 'x',
+						_1: {ctor: '[]'}
+					}
+				},
+				da),
+			A2(
+				_elm_lang$core$Json_Decode$at,
+				{
+					ctor: '::',
+					_0: 'position',
+					_1: {
+						ctor: '::',
+						_0: 'y',
+						_1: {ctor: '[]'}
+					}
+				},
+				da));
+	};
 	var blueprintSingle = A3(
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 		'version',
@@ -9025,36 +9170,7 @@ var _user$project$Data_Blueprint$decoder = function () {
 				'tiles',
 				A2(
 					_user$project$Util$dict,
-					A3(
-						_elm_lang$core$Json_Decode$map2,
-						F2(
-							function (v0, v1) {
-								return {ctor: '_Tuple2', _0: v0, _1: v1};
-							}),
-						A2(
-							_elm_lang$core$Json_Decode$at,
-							{
-								ctor: '::',
-								_0: 'position',
-								_1: {
-									ctor: '::',
-									_0: 'x',
-									_1: {ctor: '[]'}
-								}
-							},
-							_elm_lang$core$Json_Decode$float),
-						A2(
-							_elm_lang$core$Json_Decode$at,
-							{
-								ctor: '::',
-								_0: 'position',
-								_1: {
-									ctor: '::',
-									_0: 'y',
-									_1: {ctor: '[]'}
-								}
-							},
-							_elm_lang$core$Json_Decode$float)),
+					position(_elm_lang$core$Json_Decode$int),
 					_user$project$Data_Tile$decoder),
 				_elm_lang$core$Dict$empty,
 				A4(
@@ -9101,18 +9217,18 @@ var _user$project$Data_Blueprint$decoder = function () {
 			ctor: '::',
 			_0: A2(
 				_elm_lang$core$Json_Decode$andThen,
-				function (_p3) {
+				function (_p10) {
 					return _elm_lang$core$Json_Decode$succeed(
-						_user$project$Data_Blueprint$Blueprint(_p3));
+						_user$project$Data_Blueprint$Blueprint(_p10));
 				},
 				A2(_elm_lang$core$Json_Decode$field, 'blueprint', blueprintSingle)),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$core$Json_Decode$andThen,
-					function (_p4) {
+					function (_p11) {
 						return _elm_lang$core$Json_Decode$succeed(
-							_user$project$Data_Blueprint$BlueprintBook(_p4));
+							_user$project$Data_Blueprint$BlueprintBook(_p11));
 					},
 					A2(_elm_lang$core$Json_Decode$field, 'blueprint_book', blueprintMulti)),
 				_1: {ctor: '[]'}
@@ -9129,78 +9245,33 @@ var _user$project$Data_Blueprint$encodeBlueprint = function (bp) {
 	return _user$project$Data_Blueprint$EncodedBlueprint('');
 };
 
-var _user$project$View_Grid$exGrid = function (n) {
-	return A3(
-		_elm_lang$core$List$map2,
-		F2(
-			function (v0, v1) {
-				return {ctor: '_Tuple2', _0: v0, _1: v1};
-			}),
-		A2(
-			_elm_lang$core$List$concatMap,
-			_elm_lang$core$List$repeat(n),
-			A2(_elm_lang$core$List$range, 1, n)),
-		_elm_lang$core$List$concat(
-			A2(
-				_elm_lang$core$List$repeat,
-				n,
-				A2(_elm_lang$core$List$range, 1, n))));
+var _user$project$View_Grid$getSize = function (_p0) {
+	return _user$project$Util$getSize(
+		_elm_lang$core$Dict$keys(_p0));
 };
-var _user$project$View_Grid$n = 40;
 var _user$project$View_Grid_ops = _user$project$View_Grid_ops || {};
 _user$project$View_Grid_ops['=>'] = F2(
 	function (v0, v1) {
 		return {ctor: '_Tuple2', _0: v0, _1: v1};
 	});
-var _user$project$View_Grid$gridItem = function (_p0) {
-	var _p1 = _p0;
-	var _p3 = _p1._1;
-	var _p2 = _p1._0;
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('grid-item'),
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$style(
-					{
-						ctor: '::',
-						_0: A2(
-							_user$project$View_Grid_ops['=>'],
-							'grid-row',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_p3),
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'/',
-									_elm_lang$core$Basics$toString(_p3 + 1)))),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_user$project$View_Grid_ops['=>'],
-								'grid-column',
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(_p2),
-									A2(
-										_elm_lang$core$Basics_ops['++'],
-										'/',
-										_elm_lang$core$Basics$toString(_p2 + 1)))),
-							_1: {ctor: '[]'}
-						}
-					}),
-				_1: {ctor: '[]'}
-			}
-		},
-		{ctor: '[]'});
-};
 var _user$project$View_Grid$GridTile = function (a) {
 	return {occupied: a};
 };
-var _user$project$View_Grid$init = function (_p4) {
-	var _p5 = _p4;
+var _user$project$View_Grid$init = function (_p1) {
+	var _p2 = _p1;
+	var center = function (a) {
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Basics$negate((a / 2) | 0),
+			_1: (a / 2) | 0
+		};
+	};
+	var _p3 = center(_p2._0);
+	var nn = _p3._0;
+	var np = _p3._1;
+	var _p4 = center(_p2._1);
+	var mn = _p4._0;
+	var mp = _p4._1;
 	return _elm_lang$core$Dict$fromList(
 		A2(
 			_elm_lang$core$List$map,
@@ -9223,54 +9294,202 @@ var _user$project$View_Grid$init = function (_p4) {
 								_1: {ctor: '[]'}
 							};
 						},
-						A2(_elm_lang$core$List$range, 1, _p5._1));
+						A2(_elm_lang$core$List$range, mn, mp));
 				},
-				A2(_elm_lang$core$List$range, 1, _p5._0))));
+				A2(_elm_lang$core$List$range, nn, np))));
 };
-var _user$project$View_Grid$view = A2(
-	_elm_lang$html$Html$div,
-	{
-		ctor: '::',
-		_0: _elm_lang$html$Html_Attributes$class('grid-container'),
-		_1: {
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(
-				{
-					ctor: '::',
-					_0: A2(
-						_user$project$View_Grid_ops['=>'],
-						'grid-template-rows',
+var _user$project$View_Grid$fromBlueprint = function (bp) {
+	return A3(
+		_elm_lang$core$Basics$flip,
+		_elm_lang$core$Dict$union,
+		_user$project$View_Grid$init(
+			_user$project$Data_Blueprint$getSize(bp)),
+		_elm_lang$core$Dict$fromList(
+			A2(
+				_elm_lang$core$List$map,
+				A2(
+					_elm_lang$core$Basics$flip,
+					F2(
+						function (v0, v1) {
+							return {ctor: '_Tuple2', _0: v0, _1: v1};
+						}),
+					_user$project$View_Grid$GridTile(true)),
+				_user$project$Data_Blueprint$occupiedTiles(bp))));
+};
+var _user$project$View_Grid$gridItem = function (_p5) {
+	var _p6 = _p5;
+	var str = F2(
+		function (s, n) {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				s,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(n),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'-start / ',
 						A2(
 							_elm_lang$core$Basics_ops['++'],
-							'repeat(',
+							s,
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(_user$project$View_Grid$n),
-								', 1fr)'))),
-					_1: {
+								_elm_lang$core$Basics$toString(n),
+								'-end')))));
+		});
+	var occ = _elm_lang$core$Native_Utils.eq(
+		_p6._1,
+		_user$project$View_Grid$GridTile(true)) ? _elm_lang$html$Html_Attributes$class('grid-item occupied') : _elm_lang$html$Html_Attributes$class('grid-item');
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: occ,
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
 						ctor: '::',
 						_0: A2(
 							_user$project$View_Grid_ops['=>'],
-							'grid-template-columns',
+							'grid-row',
+							A2(str, 'row', _p6._0._1)),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_user$project$View_Grid_ops['=>'],
+								'grid-column',
+								A2(str, 'column', _p6._0._0)),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		{ctor: '[]'});
+};
+var _user$project$View_Grid$view = function (g) {
+	var gridStr = F3(
+		function (str, x, acc) {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				acc,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					str,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(x),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'-start] 1fr [',
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'repeat(',
+								str,
 								A2(
 									_elm_lang$core$Basics_ops['++'],
-									_elm_lang$core$Basics$toString(_user$project$View_Grid$n),
-									', 1fr)'))),
-						_1: {ctor: '[]'}
-					}
-				}),
+									_elm_lang$core$Basics$toString(x),
+									'-end '))))));
+		});
+	var _p7 = function (_p8) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '_Tuple2', _0: 0, _1: 0},
+			_elm_lang$core$List$maximum(_p8));
+	}(
+		_elm_lang$core$Dict$keys(g));
+	var xmax = _p7._0;
+	var ymax = _p7._1;
+	var _p9 = function (_p10) {
+		return A2(
+			_elm_lang$core$Maybe$withDefault,
+			{ctor: '_Tuple2', _0: 0, _1: 0},
+			_elm_lang$core$List$minimum(_p10));
+	}(
+		_elm_lang$core$Dict$keys(g));
+	var xmin = _p9._0;
+	var ymin = _p9._1;
+	var columns = A3(
+		_elm_lang$core$Basics$flip,
+		F2(
+			function (x, y) {
+				return A2(_elm_lang$core$Basics_ops['++'], x, y);
+			}),
+		']',
+		A3(
+			_elm_lang$core$List$foldl,
+			gridStr('column'),
+			'[',
+			A2(_elm_lang$core$List$range, xmin, xmax)));
+	var rows = A3(
+		_elm_lang$core$Basics$flip,
+		F2(
+			function (x, y) {
+				return A2(_elm_lang$core$Basics_ops['++'], x, y);
+			}),
+		']',
+		A3(
+			_elm_lang$core$List$foldl,
+			gridStr('row'),
+			'[',
+			A2(_elm_lang$core$List$range, ymin, ymax)));
+	var _p11 = _user$project$View_Grid$getSize(g);
+	var n = _p11._0;
+	var m = _p11._1;
+	var wh = _elm_lang$core$Native_Utils.eq(
+		{ctor: '_Tuple2', _0: n, _1: m},
+		{ctor: '_Tuple2', _0: 0, _1: 0}) ? {
+		ctor: '::',
+		_0: A2(_user$project$View_Grid_ops['=>'], 'width', '0vh'),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$View_Grid_ops['=>'], 'height', '0vh'),
 			_1: {ctor: '[]'}
 		}
-	},
-	A2(
-		_elm_lang$core$List$map,
-		_user$project$View_Grid$gridItem,
-		_elm_lang$core$Dict$keys(
-			_user$project$View_Grid$init(
-				{ctor: '_Tuple2', _0: _user$project$View_Grid$n, _1: _user$project$View_Grid$n}))));
+	} : {
+		ctor: '::',
+		_0: A2(
+			_user$project$View_Grid_ops['=>'],
+			'width',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(
+					(_elm_lang$core$Basics$toFloat(n) / _elm_lang$core$Basics$toFloat(m)) * 50),
+				'vh')),
+		_1: {
+			ctor: '::',
+			_0: A2(_user$project$View_Grid_ops['=>'], 'height', '50vh'),
+			_1: {ctor: '[]'}
+		}
+	};
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('grid-container'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					A2(
+						_elm_lang$core$List$append,
+						wh,
+						{
+							ctor: '::',
+							_0: A2(_user$project$View_Grid_ops['=>'], 'grid-template-rows', rows),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$View_Grid_ops['=>'], 'grid-template-columns', columns),
+								_1: {ctor: '[]'}
+							}
+						})),
+				_1: {ctor: '[]'}
+			}
+		},
+		A2(
+			_elm_lang$core$List$map,
+			_user$project$View_Grid$gridItem,
+			_elm_lang$core$Dict$toList(g)));
+};
 
 var _user$project$Ports$inflate = _elm_lang$core$Native_Platform.outgoingPort(
 	'inflate',
@@ -9357,7 +9576,8 @@ var _user$project$Main$view = function (model) {
 				}),
 			_1: {
 				ctor: '::',
-				_0: _user$project$View_Grid$view,
+				_0: _user$project$View_Grid$view(
+					_user$project$View_Grid$fromBlueprint(model.blueprint)),
 				_1: {
 					ctor: '::',
 					_0: A2(
