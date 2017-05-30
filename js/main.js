@@ -9251,17 +9251,17 @@ var _user$project$Data_Blueprint$encodeBlueprint = function (bp) {
 	return _user$project$Data_Blueprint$EncodedBlueprint('');
 };
 
-var _user$project$Data_GameEntity_ops = _user$project$Data_GameEntity_ops || {};
-_user$project$Data_GameEntity_ops['=>'] = F2(
+var _user$project$View_GameEntity_ops = _user$project$View_GameEntity_ops || {};
+_user$project$View_GameEntity_ops['=>'] = F2(
 	function (v0, v1) {
 		return {ctor: '_Tuple2', _0: v0, _1: v1};
 	});
-var _user$project$Data_GameEntity$position = F2(
+var _user$project$View_GameEntity$position = F2(
 	function (top, left) {
 		return {
 			ctor: '::',
 			_0: A2(
-				_user$project$Data_GameEntity_ops['=>'],
+				_user$project$View_GameEntity_ops['=>'],
 				'top',
 				A2(
 					_elm_lang$core$Basics_ops['++'],
@@ -9270,7 +9270,7 @@ var _user$project$Data_GameEntity$position = F2(
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_user$project$Data_GameEntity_ops['=>'],
+					_user$project$View_GameEntity_ops['=>'],
 					'left',
 					A2(
 						_elm_lang$core$Basics_ops['++'],
@@ -9280,48 +9280,48 @@ var _user$project$Data_GameEntity$position = F2(
 			}
 		};
 	});
-var _user$project$Data_GameEntity$GameEntity = F4(
+var _user$project$View_GameEntity$GameEntity = F4(
 	function (a, b, c, d) {
 		return {size: a, label: b, sprite: c, attributes: d};
 	});
-var _user$project$Data_GameEntity$genericGameEntity = function (label) {
+var _user$project$View_GameEntity$genericGameEntity = function (label) {
 	return A4(
-		_user$project$Data_GameEntity$GameEntity,
+		_user$project$View_GameEntity$GameEntity,
 		{ctor: '_Tuple2', _0: 1, _1: 1},
 		label,
 		_elm_lang$core$Maybe$Nothing,
 		{ctor: '[]'});
 };
-var _user$project$Data_GameEntity$exGE1 = A4(
-	_user$project$Data_GameEntity$GameEntity,
+var _user$project$View_GameEntity$exGE1 = A4(
+	_user$project$View_GameEntity$GameEntity,
 	{ctor: '_Tuple2', _0: 1, _1: 1},
 	'Transport Belt',
 	_elm_lang$core$Maybe$Just('assets/complete-east2.png'),
 	A2(
 		_elm_lang$core$Basics_ops['++'],
-		A2(_user$project$Data_GameEntity$position, -6, -20),
+		A2(_user$project$View_GameEntity$position, -6, -20),
 		{
 			ctor: '::',
-			_0: A2(_user$project$Data_GameEntity_ops['=>'], 'z-index', '0'),
+			_0: A2(_user$project$View_GameEntity_ops['=>'], 'z-index', '0'),
 			_1: {ctor: '[]'}
 		}));
-var _user$project$Data_GameEntity$exGE2 = A4(
-	_user$project$Data_GameEntity$GameEntity,
+var _user$project$View_GameEntity$exGE2 = A4(
+	_user$project$View_GameEntity$GameEntity,
 	{ctor: '_Tuple2', _0: 2, _1: 1},
 	'Express Splitter',
 	_elm_lang$core$Maybe$Just('assets/express-splitter.png'),
 	{
 		ctor: '::',
-		_0: A2(_user$project$Data_GameEntity_ops['=>'], 'margin', '0px 0 0px 0px'),
+		_0: A2(_user$project$View_GameEntity_ops['=>'], 'margin', '0px 0 0px 0px'),
 		_1: {ctor: '[]'}
 	});
-var _user$project$Data_GameEntity$exGES = A3(
+var _user$project$View_GameEntity$exGES = A3(
 	_elm_lang$core$Dict$insert,
 	'express-splitter',
-	_user$project$Data_GameEntity$exGE2,
-	A2(_elm_lang$core$Dict$singleton, 'transport-belt', _user$project$Data_GameEntity$exGE1));
-var _user$project$Data_GameEntity$exGE3 = A4(
-	_user$project$Data_GameEntity$GameEntity,
+	_user$project$View_GameEntity$exGE2,
+	A2(_elm_lang$core$Dict$singleton, 'transport-belt', _user$project$View_GameEntity$exGE1));
+var _user$project$View_GameEntity$exGE3 = A4(
+	_user$project$View_GameEntity$GameEntity,
 	{ctor: '_Tuple2', _0: 3, _1: 3},
 	'example-entity3',
 	_elm_lang$core$Maybe$Nothing,
@@ -9331,6 +9331,7 @@ var _user$project$View_Grid$getSize = function (_p0) {
 	return _user$project$Util$getSize(
 		_elm_lang$core$Dict$keys(_p0));
 };
+var _user$project$View_Grid$scale = 1;
 var _user$project$View_Grid_ops = _user$project$View_Grid_ops || {};
 _user$project$View_Grid_ops['=>'] = F2(
 	function (v0, v1) {
@@ -9369,7 +9370,7 @@ var _user$project$View_Grid$gridItem2 = F2(
 			});
 		var ge = A2(
 			_elm_lang$core$Maybe$withDefault,
-			_user$project$Data_GameEntity$genericGameEntity(entity.name),
+			_user$project$View_GameEntity$genericGameEntity(entity.name),
 			A2(_elm_lang$core$Dict$get, entity.name, ges));
 		var _p1 = function () {
 			var _p2 = ge.size;
@@ -9532,14 +9533,20 @@ var _user$project$View_Grid$view = F2(
 							_elm_lang$core$Basics$toString(x),
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'-start] 68px [',
+								'-start] ',
 								A2(
 									_elm_lang$core$Basics_ops['++'],
-									str,
+									_elm_lang$core$Basics$toString(_user$project$View_Grid$scale * 34),
 									A2(
 										_elm_lang$core$Basics_ops['++'],
-										_elm_lang$core$Basics$toString(x),
-										'-end '))))));
+										'px [',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											str,
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(x),
+												'-end '))))))));
 			});
 		var g = _user$project$View_Grid$fromBlueprint(bp);
 		var _p12 = _user$project$View_Grid$getSize(g);
@@ -9549,12 +9556,8 @@ var _user$project$View_Grid$view = F2(
 			{ctor: '_Tuple2', _0: n, _1: m},
 			{ctor: '_Tuple2', _0: 0, _1: 0}) ? {
 			ctor: '::',
-			_0: A2(_user$project$View_Grid_ops['=>'], 'width', '0vh'),
-			_1: {
-				ctor: '::',
-				_0: A2(_user$project$View_Grid_ops['=>'], 'height', '0vh'),
-				_1: {ctor: '[]'}
-			}
+			_0: A2(_user$project$View_Grid_ops['=>'], 'display', 'none'),
+			_1: {ctor: '[]'}
 		} : {
 			ctor: '::',
 			_0: A2(
@@ -9563,18 +9566,11 @@ var _user$project$View_Grid$view = F2(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Basics$toString(
-						(_elm_lang$core$Basics$toFloat(n) + 1) * 68),
-					'px')),
+						((_elm_lang$core$Basics$toFloat(n) + 1) / (_elm_lang$core$Basics$toFloat(m) + 1)) * 50),
+					'vh')),
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_user$project$View_Grid_ops['=>'],
-					'height',
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						_elm_lang$core$Basics$toString(
-							(_elm_lang$core$Basics$toFloat(m) + 1) * 68),
-						'px')),
+				_0: A2(_user$project$View_Grid_ops['=>'], 'height', '50vh'),
 				_1: {ctor: '[]'}
 			}
 		};
@@ -9650,7 +9646,7 @@ var _user$project$Ports$inflate = _elm_lang$core$Native_Platform.outgoingPort(
 	});
 var _user$project$Ports$inflated = _elm_lang$core$Native_Platform.incomingPort('inflated', _elm_lang$core$Json_Decode$value);
 
-var _user$project$Main$model = {statusText: '', blueprint: _user$project$Data_Blueprint$empty, tiles: _elm_lang$core$Dict$empty, blueprintString: '', gameEntities: _user$project$Data_GameEntity$exGES};
+var _user$project$Main$model = {statusText: '', blueprint: _user$project$Data_Blueprint$empty, tiles: _elm_lang$core$Dict$empty, blueprintString: '', gameEntities: _user$project$View_GameEntity$exGES};
 var _user$project$Main$Model = F5(
 	function (a, b, c, d, e) {
 		return {statusText: a, blueprint: b, tiles: c, blueprintString: d, gameEntities: e};
@@ -9841,7 +9837,7 @@ var _user$project$Main$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{gameEntities: _user$project$Data_GameEntity$exGES}),
+							{gameEntities: _user$project$View_GameEntity$exGES}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 			}

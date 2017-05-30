@@ -23,9 +23,8 @@ type alias Grid =
     (,)
 
 
-
--- n =
---     40
+scale =
+    1
 
 
 init : ( Int, Int ) -> Grid
@@ -74,11 +73,13 @@ view bp ge =
 
         wh =
             if ( n, m ) == ( 0, 0 ) then
-                [ "width" => "0vh", "height" => "0vh" ]
+                [ "display" => "none" ]
             else
-                -- [ "width" => (toString ((toFloat n) / (toFloat m) * 50) ++ "vh"), "height" => "50vh" ]
-                [ "width" => ((toString ((toFloat n+1) * 68)) ++ "px"), "height" => ((toString ((toFloat m+1) * 68)) ++ "px") ]
+                [ "width" => (toString ((toFloat n + 1) / (toFloat m + 1) * (scale * 50)) ++ "vh")
+                , "height" => (toString (scale * 50) ++ "vh")
+                ]
 
+        -- [ "width" => ((toString ((toFloat n + 1) * 68)) ++ "px"), "height" => ((toString ((toFloat m + 1) * 68)) ++ "px") ]
         ( xmin, xmax ) =
             Dict.keys g |> Util.getXRange
 
@@ -86,7 +87,7 @@ view bp ge =
             Dict.keys g |> Util.getYRange
 
         gridStr =
-            \str x acc -> acc ++ str ++ toString x ++ "-start] 68px [" ++ str ++ toString x ++ "-end "
+            \str x acc -> acc ++ str ++ toString x ++ "-start] " ++ toString (scale * 34) ++ "px [" ++ str ++ toString x ++ "-end "
 
         columns =
             List.range xmin xmax |> List.foldl (gridStr "column") "[" |> flip (++) "]"
@@ -102,87 +103,58 @@ view bp ge =
                     , "grid-template-columns" => columns
                     ]
             ]
-            -- (List.map gridItem (Dict.toList g))
-            (List.map (gridItem2 ge) (Dict.values (.entities <| BP.getActiveBlueprint bp)))
+            (List.map (gridItem ge) (Dict.values (.entities <| BP.getActiveBlueprint bp)))
+
+
+gridItem : GameEntities -> Entity -> Html msg
+gridItem ges entity =
+    Dict.get entity.name ges
+        |> Maybe.withDefault (genericGameEntity entity.name)
+        |> GameEntity.view scale entity
 
 
 
--- gridItem : ( ( Int, Int ), GridTile ) -> Html msg
--- gridItem ( ( x, y ), gt ) =
---     let
---         occ =
---             if gt == GridTile True then
---                 (class "grid-item occupied")
---             else
---                 (class "grid-item")
---         str s n =
---             s ++ toString n ++ "-start / " ++ s ++ toString n ++ "-end"
---     in
---         div
---             [ occ
---             , style
---                 [ "grid-row" => str "row" y
---                 , "grid-column" => str "column" x
---                 ]
+-- let
+--     ( xe, ye ) =
+--         entity.position
+--     ge =
+--         Dict.get entity.name ges |> Maybe.withDefault (genericGameEntity entity.name)
+--     ( xs, ys ) =
+--         let
+--             ( xs, ys ) =
+--                 ge.size
+--         in
+--             case entity.direction of
+--                 0 ->
+--                     ( xs, ys )
+--                 2 ->
+--                     ( ys, xs )
+--                 4 ->
+--                     ( xs, ys )
+--                 6 ->
+--                     ( ys, xs )
+--                 _ ->
+--                     ( xs, ys )
+--     fromTo pos size =
+--         ( pos - (toFloat (size - 1)) / 2 |> floor, pos + (toFloat (size - 1)) / 2 |> floor )
+--     ( x1, x2 ) =
+--         fromTo xe xs
+--     ( y1, y2 ) =
+--         fromTo ye ys
+--     str s a b =
+--         s ++ toString a ++ "-start / " ++ s ++ toString b ++ "-end"
+--     texture =
+--         case ge.sprite of
+--             Just str ->
+--                 img [ class ("sprite rotate" {- ++ toString (entity.direction * 45) -}), src str, style ge.attributes ] []
+--             Nothing ->
+--                 text ""
+-- in
+--     div
+--         [ class "grid-item"
+--         , style
+--             [ "grid-row" => str "row" y1 y2
+--             , "grid-column" => str "column" x1 x2
 --             ]
---             []
-
-
-gridItem2 : GameEntities -> Entity -> Html msg
-gridItem2 ges entity =
-    let
-        ( xe, ye ) =
-            entity.position
-
-        ge =
-            Dict.get entity.name ges |> Maybe.withDefault (genericGameEntity entity.name)
-
-        ( xs, ys ) =
-            let
-                ( xs, ys ) =
-                    ge.size
-            in
-                case entity.direction of
-                    0 ->
-                        ( xs, ys )
-
-                    2 ->
-                        ( ys, xs )
-
-                    4 ->
-                        ( xs, ys )
-
-                    6 ->
-                        ( ys, xs )
-
-                    _ ->
-                        ( xs, ys )
-
-        fromTo pos size =
-            ( pos - (toFloat (size - 1)) / 2 |> floor, pos + (toFloat (size - 1)) / 2 |> floor )
-
-        ( x1, x2 ) =
-            fromTo xe xs
-
-        ( y1, y2 ) =
-            fromTo ye ys
-
-        str s a b =
-            s ++ toString a ++ "-start / " ++ s ++ toString b ++ "-end"
-
-        texture =
-            case ge.sprite of
-                Just str ->
-                    img [ class ("sprite rotate" {- ++ toString (entity.direction * 45) -}), src str, style ge.attributes ] []
-
-                Nothing ->
-                    text ""
-    in
-        div
-            [ class "grid-item"
-            , style
-                [ "grid-row" => str "row" y1 y2
-                , "grid-column" => str "column" x1 x2
-                ]
-            ]
-            [ texture ]
+--         ]
+--         [ texture ]

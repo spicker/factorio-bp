@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import View.Grid as Grid
-import Data.GameEntity as GameEntity exposing (GameEntity, GameEntities, genericGameEntity)
+import View.GameEntity as GameEntity exposing (GameEntity, GameEntities, genericGameEntity)
 import Data.Blueprint as BP exposing (Blueprint, EncodedBlueprint)
 import Ports exposing (..)
 import Html exposing (..)
