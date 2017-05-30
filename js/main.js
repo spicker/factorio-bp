@@ -8650,10 +8650,10 @@ var _truqu$elm_base64$Base64$encode = function (s) {
 					_truqu$elm_base64$Base64$toCodeList(s)))));
 };
 
-var _user$project$Util$getSize = function (ls) {
+var _user$project$Util$getYRange = function (ls) {
 	var lss = _elm_lang$core$Tuple$second(
 		_elm_lang$core$List$unzip(ls));
-	var _p0 = {
+	return {
 		ctor: '_Tuple2',
 		_0: A2(
 			_elm_lang$core$Maybe$withDefault,
@@ -8664,11 +8664,11 @@ var _user$project$Util$getSize = function (ls) {
 			0,
 			_elm_lang$core$List$maximum(lss))
 	};
-	var ymin = _p0._0;
-	var ymax = _p0._1;
+};
+var _user$project$Util$getXRange = function (ls) {
 	var lsf = _elm_lang$core$Tuple$first(
 		_elm_lang$core$List$unzip(ls));
-	var _p1 = {
+	return {
 		ctor: '_Tuple2',
 		_0: A2(
 			_elm_lang$core$Maybe$withDefault,
@@ -8679,6 +8679,12 @@ var _user$project$Util$getSize = function (ls) {
 			0,
 			_elm_lang$core$List$maximum(lsf))
 	};
+};
+var _user$project$Util$getSize = function (ls) {
+	var _p0 = _user$project$Util$getYRange(ls);
+	var ymin = _p0._0;
+	var ymax = _p0._1;
+	var _p1 = _user$project$Util$getXRange(ls);
 	var xmin = _p1._0;
 	var xmax = _p1._1;
 	return {ctor: '_Tuple2', _0: xmax - xmin, _1: ymax - ymin};
@@ -9245,37 +9251,81 @@ var _user$project$Data_Blueprint$encodeBlueprint = function (bp) {
 	return _user$project$Data_Blueprint$EncodedBlueprint('');
 };
 
-var _user$project$Data_GameEntity$GameEntity = F3(
-	function (a, b, c) {
-		return {size: a, label: b, sprite: c};
+var _user$project$Data_GameEntity_ops = _user$project$Data_GameEntity_ops || {};
+_user$project$Data_GameEntity_ops['=>'] = F2(
+	function (v0, v1) {
+		return {ctor: '_Tuple2', _0: v0, _1: v1};
+	});
+var _user$project$Data_GameEntity$position = F2(
+	function (top, left) {
+		return {
+			ctor: '::',
+			_0: A2(
+				_user$project$Data_GameEntity_ops['=>'],
+				'top',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(top),
+					'px')),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_user$project$Data_GameEntity_ops['=>'],
+					'left',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(left),
+						'px')),
+				_1: {ctor: '[]'}
+			}
+		};
+	});
+var _user$project$Data_GameEntity$GameEntity = F4(
+	function (a, b, c, d) {
+		return {size: a, label: b, sprite: c, attributes: d};
 	});
 var _user$project$Data_GameEntity$genericGameEntity = function (label) {
-	return A3(
+	return A4(
 		_user$project$Data_GameEntity$GameEntity,
 		{ctor: '_Tuple2', _0: 1, _1: 1},
 		label,
-		_elm_lang$core$Maybe$Nothing);
+		_elm_lang$core$Maybe$Nothing,
+		{ctor: '[]'});
 };
-var _user$project$Data_GameEntity$exGE1 = A3(
+var _user$project$Data_GameEntity$exGE1 = A4(
 	_user$project$Data_GameEntity$GameEntity,
 	{ctor: '_Tuple2', _0: 1, _1: 1},
-	'Express Transport Belt',
-	_elm_lang$core$Maybe$Just('assets/express-transport-belt.png'));
-var _user$project$Data_GameEntity$exGE2 = A3(
+	'Transport Belt',
+	_elm_lang$core$Maybe$Just('assets/complete-east2.png'),
+	A2(
+		_elm_lang$core$Basics_ops['++'],
+		A2(_user$project$Data_GameEntity$position, -6, -20),
+		{
+			ctor: '::',
+			_0: A2(_user$project$Data_GameEntity_ops['=>'], 'z-index', '0'),
+			_1: {ctor: '[]'}
+		}));
+var _user$project$Data_GameEntity$exGE2 = A4(
 	_user$project$Data_GameEntity$GameEntity,
 	{ctor: '_Tuple2', _0: 2, _1: 1},
 	'Express Splitter',
-	_elm_lang$core$Maybe$Nothing);
+	_elm_lang$core$Maybe$Just('assets/express-splitter.png'),
+	{
+		ctor: '::',
+		_0: A2(_user$project$Data_GameEntity_ops['=>'], 'margin', '0px 0 0px 0px'),
+		_1: {ctor: '[]'}
+	});
 var _user$project$Data_GameEntity$exGES = A3(
 	_elm_lang$core$Dict$insert,
 	'express-splitter',
 	_user$project$Data_GameEntity$exGE2,
-	A2(_elm_lang$core$Dict$singleton, 'express-transport-belt', _user$project$Data_GameEntity$exGE1));
-var _user$project$Data_GameEntity$exGE3 = A3(
+	A2(_elm_lang$core$Dict$singleton, 'transport-belt', _user$project$Data_GameEntity$exGE1));
+var _user$project$Data_GameEntity$exGE3 = A4(
 	_user$project$Data_GameEntity$GameEntity,
 	{ctor: '_Tuple2', _0: 3, _1: 3},
 	'example-entity3',
-	_elm_lang$core$Maybe$Nothing);
+	_elm_lang$core$Maybe$Nothing,
+	{ctor: '[]'});
 
 var _user$project$View_Grid$getSize = function (_p0) {
 	return _user$project$Util$getSize(
@@ -9348,12 +9398,20 @@ var _user$project$View_Grid$gridItem2 = F2(
 					_elm_lang$html$Html$img,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$src(_p4._0),
-						_1: {ctor: '[]'}
+						_0: _elm_lang$html$Html_Attributes$class('sprite rotate'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$src(_p4._0),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(ge.attributes),
+								_1: {ctor: '[]'}
+							}
+						}
 					},
 					{ctor: '[]'});
 			} else {
-				return _elm_lang$html$Html$text(ge.label);
+				return _elm_lang$html$Html$text('');
 			}
 		}();
 		var _p5 = entity.position;
@@ -9474,7 +9532,7 @@ var _user$project$View_Grid$view = F2(
 							_elm_lang$core$Basics$toString(x),
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'-start] 1fr [',
+								'-start] 68px [',
 								A2(
 									_elm_lang$core$Basics_ops['++'],
 									str,
@@ -9505,32 +9563,25 @@ var _user$project$View_Grid$view = F2(
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Basics$toString(
-						(_elm_lang$core$Basics$toFloat(n) / _elm_lang$core$Basics$toFloat(m)) * 50),
-					'vh')),
+						(_elm_lang$core$Basics$toFloat(n) + 1) * 68),
+					'px')),
 			_1: {
 				ctor: '::',
-				_0: A2(_user$project$View_Grid_ops['=>'], 'height', '50vh'),
+				_0: A2(
+					_user$project$View_Grid_ops['=>'],
+					'height',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(
+							(_elm_lang$core$Basics$toFloat(m) + 1) * 68),
+						'px')),
 				_1: {ctor: '[]'}
 			}
 		};
-		var _p13 = function (_p14) {
-			return A2(
-				_elm_lang$core$Maybe$withDefault,
-				{ctor: '_Tuple2', _0: 0, _1: 0},
-				_elm_lang$core$List$minimum(_p14));
-		}(
+		var _p13 = _user$project$Util$getXRange(
 			_elm_lang$core$Dict$keys(g));
 		var xmin = _p13._0;
-		var ymin = _p13._1;
-		var _p15 = function (_p16) {
-			return A2(
-				_elm_lang$core$Maybe$withDefault,
-				{ctor: '_Tuple2', _0: 0, _1: 0},
-				_elm_lang$core$List$maximum(_p16));
-		}(
-			_elm_lang$core$Dict$keys(g));
-		var xmax = _p15._0;
-		var ymax = _p15._1;
+		var xmax = _p13._1;
 		var columns = A3(
 			_elm_lang$core$Basics$flip,
 			F2(
@@ -9543,6 +9594,10 @@ var _user$project$View_Grid$view = F2(
 				gridStr('column'),
 				'[',
 				A2(_elm_lang$core$List$range, xmin, xmax)));
+		var _p14 = _user$project$Util$getYRange(
+			_elm_lang$core$Dict$keys(g));
+		var ymin = _p14._0;
+		var ymax = _p14._1;
 		var rows = A3(
 			_elm_lang$core$Basics$flip,
 			F2(
@@ -9587,58 +9642,6 @@ var _user$project$View_Grid$view = F2(
 					}(
 						_user$project$Data_Blueprint$getActiveBlueprint(bp)))));
 	});
-var _user$project$View_Grid$gridItem = function (_p17) {
-	var _p18 = _p17;
-	var str = F2(
-		function (s, n) {
-			return A2(
-				_elm_lang$core$Basics_ops['++'],
-				s,
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(n),
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'-start / ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							s,
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(n),
-								'-end')))));
-		});
-	var occ = _elm_lang$core$Native_Utils.eq(
-		_p18._1,
-		_user$project$View_Grid$GridTile(true)) ? _elm_lang$html$Html_Attributes$class('grid-item occupied') : _elm_lang$html$Html_Attributes$class('grid-item');
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: occ,
-			_1: {
-				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$style(
-					{
-						ctor: '::',
-						_0: A2(
-							_user$project$View_Grid_ops['=>'],
-							'grid-row',
-							A2(str, 'row', _p18._0._1)),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_user$project$View_Grid_ops['=>'],
-								'grid-column',
-								A2(str, 'column', _p18._0._0)),
-							_1: {ctor: '[]'}
-						}
-					}),
-				_1: {ctor: '[]'}
-			}
-		},
-		{ctor: '[]'});
-};
 
 var _user$project$Ports$inflate = _elm_lang$core$Native_Platform.outgoingPort(
 	'inflate',

@@ -1,7 +1,7 @@
 module View.Grid exposing (..)
 
 import Util
-import Data.GameEntity as GameEntity exposing (GameEntity, GameEntities, genericGameEntity)
+import View.GameEntity as GameEntity exposing (GameEntity, GameEntities, genericGameEntity)
 import Data.Blueprint as BP exposing (Blueprint)
 import Data.Entity as Entity exposing (Entity)
 import Html exposing (..)
@@ -76,16 +76,17 @@ view bp ge =
             if ( n, m ) == ( 0, 0 ) then
                 [ "width" => "0vh", "height" => "0vh" ]
             else
-                [ "width" => (toString ((toFloat n) / (toFloat m) * 50) ++ "vh"), "height" => "50vh" ]
+                -- [ "width" => (toString ((toFloat n) / (toFloat m) * 50) ++ "vh"), "height" => "50vh" ]
+                [ "width" => ((toString ((toFloat n+1) * 68)) ++ "px"), "height" => ((toString ((toFloat m+1) * 68)) ++ "px") ]
 
-        ( xmin, ymin ) =
-            Dict.keys g |> Maybe.withDefault ( 0, 0 ) << List.minimum
+        ( xmin, xmax ) =
+            Dict.keys g |> Util.getXRange
 
-        ( xmax, ymax ) =
-            Dict.keys g |> Maybe.withDefault ( 0, 0 ) << List.maximum
+        ( ymin, ymax ) =
+            Dict.keys g |> Util.getYRange
 
         gridStr =
-            \str x acc -> acc ++ str ++ toString x ++ "-start] 1fr [" ++ str ++ toString x ++ "-end "
+            \str x acc -> acc ++ str ++ toString x ++ "-start] 68px [" ++ str ++ toString x ++ "-end "
 
         columns =
             List.range xmin xmax |> List.foldl (gridStr "column") "[" |> flip (++) "]"
@@ -105,6 +106,7 @@ view bp ge =
             (List.map (gridItem2 ge) (Dict.values (.entities <| BP.getActiveBlueprint bp)))
 
 
+
 -- gridItem : ( ( Int, Int ), GridTile ) -> Html msg
 -- gridItem ( ( x, y ), gt ) =
 --     let
@@ -113,7 +115,6 @@ view bp ge =
 --                 (class "grid-item occupied")
 --             else
 --                 (class "grid-item")
-
 --         str s n =
 --             s ++ toString n ++ "-start / " ++ s ++ toString n ++ "-end"
 --     in
@@ -169,10 +170,13 @@ gridItem2 ges entity =
         str s a b =
             s ++ toString a ++ "-start / " ++ s ++ toString b ++ "-end"
 
-        texture = 
-            case ge.sprite of 
-                Just str -> img [src str] []
-                Nothing -> text ge.label
+        texture =
+            case ge.sprite of
+                Just str ->
+                    img [ class ("sprite rotate" {- ++ toString (entity.direction * 45) -}), src str, style ge.attributes ] []
+
+                Nothing ->
+                    text ""
     in
         div
             [ class "grid-item"

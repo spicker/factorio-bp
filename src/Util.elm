@@ -12,24 +12,28 @@ dict c =
 getSize : List ( Int, Int ) -> ( Int, Int )
 getSize ls =
     let
-        -- smax =
-        --     (Maybe.withDefault 0) << List.maximum
-        -- smin =
-        --     (Maybe.withDefault 0) << List.minimum
-        -- lefts =
-        --     ls |> List.map Tuple.first
-        -- rights =
-        --     ls |> List.map Tuple.second
-        lsf =
-            List.unzip ls |> Tuple.first
-
-        lss =
-            List.unzip ls |> Tuple.second
-
         ( xmin, xmax ) =
-            ( Maybe.withDefault 0 (List.minimum lsf), Maybe.withDefault 0 (List.maximum lsf) )
+            getXRange ls
 
         ( ymin, ymax ) =
-            ( Maybe.withDefault 0 (List.minimum lss), Maybe.withDefault 0 (List.maximum lss) )
+            getYRange ls
     in
-        ( xmax - xmin , ymax - ymin  )
+        ( xmax - xmin, ymax - ymin )
+
+
+getXRange : List ( Int, Int ) -> ( Int, Int )
+getXRange ls =
+    let
+        lsf =
+            List.unzip ls |> Tuple.first
+    in
+        ( Maybe.withDefault 0 (List.minimum lsf), Maybe.withDefault 0 (List.maximum lsf) )
+
+
+getYRange : List ( Int, Int ) -> ( Int, Int )
+getYRange ls =
+    let
+        lss =
+            List.unzip ls |> Tuple.second
+    in
+        ( Maybe.withDefault 0 (List.minimum lss), Maybe.withDefault 0 (List.maximum lss) )
